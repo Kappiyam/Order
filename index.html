@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kappiyam Organic Farm — Order</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:      #209d5c;
+    --green-dark: #157a44;
+    --green-deep: #0d5c33;
+    --lgreen:     #d9ede2;
+    --lgreen2:    #eef7f2;
+    --cream:      #fdf8f0;
+    --warm:       #f5ede0;
+    --brown:      #8b5e3c;
+    --text:       #1a2e1f;
+    --muted:      #6b7c6e;
+    --border:     #c8e0d0;
+    --white:      #ffffff;
+    --shadow:     0 2px 16px rgba(32,157,92,0.10);
+    --radius:     14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 120px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--green) 60%, #2db870 100%);
+    padding: 28px 20px 22px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .header-logo {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.3px;
+  }
+  header .tagline {
+    font-family: 'Caveat', cursive;
+    font-size: 17px; color: var(--lgreen);
+    margin-top: 2px;
+  }
+  header .terms-bar {
+    margin-top: 12px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px; color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+  }
+
+  /* ── CUSTOMER DETAILS ── */
+  .customer-section {
+    background: var(--white);
+    margin: 16px 12px 0;
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 600;
+    color: var(--green-dark);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title span { font-size: 18px; }
+
+  .form-row { margin-bottom: 12px; }
+  .form-row label {
+    display: block;
+    font-size: 12px; font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.6px;
+    margin-bottom: 5px;
+  }
+  .form-row input, .form-row select {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--lgreen2);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-row input:focus, .form-row select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(32,157,92,0.12);
+    background: var(--white);
+  }
+  .form-row input::placeholder { color: #b0bdb4; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* ── CATEGORY SECTION ── */
+  .category-block {
+    margin: 12px 12px 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .category-header {
+    padding: 13px 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px; font-weight: 600;
+    color: var(--white);
+    display: flex; align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .cat-veg   { background: linear-gradient(90deg, #157a44, #209d5c); }
+  .cat-fruit { background: linear-gradient(90deg, #6b21a8, #9333ea); }
+  .cat-green { background: linear-gradient(90deg, #0d5c33, #157a44); }
+  .cat-vap   { background: linear-gradient(90deg, #92400e, #b45309); }
+
+  .category-header .cat-info {
+    display: flex; align-items: center; gap: 9px;
+  }
+  .cat-emoji { font-size: 20px; }
+  .cat-count {
+    background: rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 2px 9px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+  .cat-toggle { font-size: 20px; transition: transform 0.3s; }
+  .cat-toggle.open { transform: rotate(180deg); }
+
+  .items-grid {
+    background: var(--white);
+    display: none;
+  }
+  .items-grid.open { display: block; }
+
+  /* ── ITEM ROW ── */
+  .item-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--lgreen);
+    gap: 10px;
+    transition: background 0.15s;
+  }
+  .item-row:last-child { border-bottom: none; }
+  .item-row:hover { background: var(--lgreen2); }
+  .item-row.unavailable { opacity: 0.45; pointer-events: none; }
+
+  .item-info { flex: 1; min-width: 0; }
+  .item-name {
+    font-size: 13.5px; font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .item-price {
+    font-size: 11.5px; color: var(--muted);
+    margin-top: 2px;
+  }
+  .unavailable-badge {
+    font-size: 10.5px;
+    color: #dc2626;
+    background: #fee2e2;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: 600;
+  }
+
+  /* ── QTY SELECTOR ── */
+  .qty-selector {
+    display: flex; align-items: center;
+    background: var(--lgreen2);
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .qty-btn {
+    width: 32px; height: 34px;
+    background: none; border: none;
+    font-size: 18px; font-weight: 600;
+    color: var(--green);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .qty-btn:hover { background: var(--lgreen); }
+  .qty-btn:active { background: var(--border); }
+  .qty-display {
+    min-width: 52px;
+    text-align: center;
+    font-size: 13px; font-weight: 600;
+    color: var(--text);
+    padding: 0 2px;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .qty-display.has-value { color: var(--green); }
+
+  /* Dropdown variant for kg items */
+  .qty-dropdown {
+    appearance: none;
+    background: var(--lgreen2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23209d5c' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 9px center;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    padding: 7px 28px 7px 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    min-width: 100px;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+  }
+  .qty-dropdown:focus { border-color: var(--green); }
+  .qty-dropdown.has-value {
+    background-color: var(--lgreen);
+    border-color: var(--green);
+    color: var(--green-dark);
+    font-weight: 600;
+  }
+
+  /* ── STICKY TOTAL BAR ── */
+  .total-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 2px solid var(--lgreen);
+    padding: 12px 16px;
+    display: flex; align-items: center;
+    gap: 12px;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.10);
+    z-index: 100;
+  }
+  .total-info { flex: 1; }
+  .total-label {
+    font-size: 11px; color: var(--muted);
+    font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .total-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--green);
+    line-height: 1.1;
+  }
+  .total-items {
+    font-size: 11.5px; color: var(--muted);
+    margin-top: 1px;
+  }
+  .total-hint {
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .hint-free  { background: #dcfce7; color: #15803d; }
+  .hint-charge { background: #fff7ed; color: #c2410c; }
+
+  .btn-review {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: var(--white);
+    border: none;
+    border-radius: 11px;
+    padding: 12px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 3px 12px rgba(32,157,92,0.35);
+    white-space: nowrap;
+  }
+  .btn-review:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(32,157,92,0.4); }
+  .btn-review:active { transform: translateY(0); }
+  .btn-review:disabled {
+    background: #c5d4c9;
+    box-shadow: none; cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,30,15,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.show {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--white);
+    border-radius: 22px 22px 0 0;
+    width: 100%; max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 0 0 24px;
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 12px auto 0;
+  }
+  .modal-header {
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--lgreen);
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--green-dark);
+  }
+  .modal-subtitle {
+    font-size: 13px; color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* Summary items in modal */
+  .summary-section {
+    padding: 0 20px;
+    margin-top: 14px;
+  }
+  .summary-cat-label {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--muted);
+    margin: 12px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--lgreen);
+  }
+  .summary-item {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--lgreen2);
+    gap: 10px;
+  }
+  .summary-item:last-child { border-bottom: none; }
+  .summary-item-name {
+    font-size: 13px; color: var(--text);
+    flex: 1;
+  }
+  .summary-item-qty {
+    font-size: 12px; color: var(--muted);
+    background: var(--lgreen);
+    padding: 2px 8px; border-radius: 5px;
+    font-weight: 600; flex-shrink: 0;
+  }
+  .summary-item-amt {
+    font-size: 13px; font-weight: 600;
+    color: var(--green-dark);
+    min-width: 56px; text-align: right;
+  }
+
+  .summary-totals {
+    margin: 16px 20px 0;
+    background: var(--lgreen2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+  }
+  .summary-row {
+    display: flex; justify-content: space-between;
+    align-items: center;
+    font-size: 13.5px;
+    padding: 4px 0;
+    color: var(--text);
+  }
+  .summary-row.total {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--green-dark);
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1.5px solid var(--border);
+  }
+  .delivery-note {
+    margin-top: 10px;
+    font-size: 12px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .note-free   { background: #dcfce7; color: #15803d; }
+  .note-charge { background: #fff7ed; color: #c2410c; }
+
+  /* Empty state */
+  .empty-cart {
+    padding: 20px; text-align: center;
+    color: var(--muted); font-size: 14px;
+  }
+
+  /* Modal buttons */
+  .modal-actions {
+    padding: 16px 20px 0;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .btn-submit {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: var(--white);
+    border: none; border-radius: 12px;
+    padding: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 14px rgba(32,157,92,0.35);
+  }
+  .btn-submit:hover { transform: translateY(-1px); }
+  .btn-submit:disabled {
+    background: #c5d4c9; box-shadow: none;
+    cursor: not-allowed; transform: none;
+  }
+  .btn-cancel {
+    background: none; border: 1.5px solid var(--border);
+    color: var(--muted); border-radius: 12px;
+    padding: 12px; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    width: 100%; transition: background 0.15s;
+  }
+  .btn-cancel:hover { background: var(--lgreen2); }
+
+  /* Terms checkbox */
+  .terms-check {
+    margin: 0 20px;
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12.5px; color: var(--muted);
+    line-height: 1.4;
+  }
+  .terms-check input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--green);
+    flex-shrink: 0; margin-top: 1px;
+    cursor: pointer;
+  }
+
+  /* ── SUCCESS STATE ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .success-screen.show { display: block; }
+  .success-icon {
+    font-size: 56px; margin-bottom: 14px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; color: var(--green-dark);
+    margin-bottom: 8px;
+  }
+  .success-msg {
+    font-size: 14px; color: var(--muted);
+    line-height: 1.6; margin-bottom: 20px;
+  }
+  .btn-whatsapp {
+    display: flex; align-items: center; justify-content: center;
+    gap: 9px;
+    background: #25D366;
+    color: var(--white); border: none; border-radius: 12px;
+    padding: 15px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; width: 100%;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 14px rgba(37,211,102,0.35);
+    transition: transform 0.15s;
+    text-decoration: none;
+  }
+  .btn-whatsapp:hover { transform: translateY(-1px); }
+  .btn-new-order {
+    background: none; border: 1.5px solid var(--border);
+    color: var(--muted); border-radius: 12px;
+    padding: 12px; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; cursor: pointer; width: 100%;
+  }
+
+  /* ── LOADING ── */
+  .loading-spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── DELIVERY DATE ── */
+  .delivery-section {
+    background: var(--white);
+    margin: 12px 12px 0;
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .date-chips {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .date-chip {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--lgreen2);
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text);
+  }
+  .date-chip:hover { border-color: var(--green); background: var(--lgreen); }
+  .date-chip.selected {
+    background: var(--green); color: var(--white);
+    border-color: var(--green);
+    font-weight: 600;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--lgreen2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-logo">🌿</div>
+  <h1>Kappiyam Organic Farm</h1>
+  <div class="tagline">Your Family Farmer</div>
+  <div class="terms-bar">
+    🚚 Free delivery on orders ₹500+  &nbsp;|&nbsp;  Orders close 8 PM previous day  &nbsp;|&nbsp;  First-come first-served
+  </div>
+</header>
+
+<!-- CUSTOMER DETAILS -->
+<div class="customer-section">
+  <div class="section-title"><span>👤</span> Your Details</div>
+  <div class="form-row">
+    <label>Full Name *</label>
+    <input type="text" id="customerName" placeholder="Enter your name" required>
+  </div>
+  <div class="form-grid">
+    <div class="form-row">
+      <label>Mobile / WhatsApp *</label>
+      <input type="tel" id="phone" placeholder="10-digit number" maxlength="10" required>
+    </div>
+    <div class="form-row">
+      <label>Delivery Date *</label>
+      <input type="date" id="deliveryDate" required>
+    </div>
+  </div>
+  <div class="form-row">
+    <label>Delivery Address *</label>
+    <input type="text" id="address" placeholder="House no, Street, Area" required>
+  </div>
+  <div class="form-row">
+    <label>Landmark (Optional)</label>
+    <input type="text" id="landmark" placeholder="Near school, temple, etc.">
+  </div>
+</div>
+
+<!-- ITEMS will be rendered here by JS -->
+<div id="itemsContainer"></div>
+
+<!-- STICKY TOTAL BAR -->
+<div class="total-bar">
+  <div class="total-info">
+    <div class="total-label">Order Total</div>
+    <div class="total-amount" id="totalAmount">₹0</div>
+    <div class="total-items" id="totalItems">No items selected</div>
+  </div>
+  <div id="deliveryHint" class="total-hint hint-charge">+₹100 delivery</div>
+  <button class="btn-review" id="reviewBtn" onclick="openReview()" disabled>
+    Review Order →
+  </button>
+</div>
+
+<!-- REVIEW MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+
+    <!-- Summary view -->
+    <div id="summaryView">
+      <div class="modal-header">
+        <div class="modal-title">Order Summary</div>
+        <div class="modal-subtitle" id="modalSubtitle">Review before placing your order</div>
+      </div>
+
+      <div class="summary-section" id="summaryItems"></div>
+
+      <div class="summary-totals" id="summaryTotals"></div>
+
+      <div class="terms-check" style="margin-top:14px;">
+        <input type="checkbox" id="termsCheck">
+        <label for="termsCheck">
+          I agree to the Terms of Supply — minimum ₹500 for free delivery, orders close at 8 PM, availability subject to stock, 10% discount for farm pickup.
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-submit" id="submitBtn" onclick="placeOrder()">
+          ✅ Place Order
+        </button>
+        <button class="btn-cancel" onclick="closeReview()">← Edit Order</button>
+      </div>
+    </div>
+
+    <!-- Success view -->
+    <div class="success-screen" id="successView">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Order Placed!</div>
+      <div class="success-msg" id="successMsg">
+        Thank you! We'll confirm your order shortly.
+      </div>
+      <a class="btn-whatsapp" id="waBtn" href="#" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Send Order on WhatsApp
+      </a>
+      <button class="btn-new-order" onclick="newOrder()">Place Another Order</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  CONFIGURATION — UPDATE THESE
+// ============================================================
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqt-3D9sxPJpjickDxgYTtgYdgHchDOoQnSF_slwouR3x8GF45_wCCvXcE1IpbKWJAdw/exec";
+var FARM_PHONE = "919003889666";
+
+// ============================================================
+//  ITEMS DATA — matches your Apps Script ITEMS_DATA exactly
+// ============================================================
+var ITEMS = [
+  // VEGETABLES
+  { cat:"Vegetables", name:"Ash gourd / வெண்பூசணி",           p250:0,   p500:40,  p1kg:60,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  { cat:"Vegetables", name:"Banana Flower / வாழை பூ",          p250:20,  p500:0,   p1kg:0,   unit:"Piece", opts:["1","2","3","4","Other"],         available:true },
+  { cat:"Vegetables", name:"Banana Stem / வாழைத்தண்டு",        p250:20,  p500:0,   p1kg:0,   unit:"Piece", opts:["1","2","3","4","Other"],         available:true },
+  { cat:"Vegetables", name:"Beetroot / பீட்ரூட்",              p250:30,  p500:50,  p1kg:90,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Bitter gourd / பாகற்காய்",         p250:25,  p500:40,  p1kg:70,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Bottle gourd / சுரைக்காய்",        p250:25,  p500:40,  p1kg:60,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Bottle gourd Long / சுரைக்காய் நீண்ட", p250:0, p500:30, p1kg:60, unit:"Kg",   opts:["0.5","1","Other"],              available:true },
+  { cat:"Vegetables", name:"Bottle gourd Native / நாட்டு சுரைக்காய்", p250:30, p500:50, p1kg:70, unit:"Kg", opts:[".25","0.5","1","Other"],      available:true },
+  { cat:"Vegetables", name:"Brinjal / கத்திரிக்காய்",          p250:25,  p500:40,  p1kg:70,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Broad beans / அவரைக்காய்",         p250:30,  p500:50,  p1kg:80,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Cabbage / முட்டைகோஸ்",             p250:25,  p500:40,  p1kg:70,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Cauliflower / காலிஃப்ளவர்",        p250:25,  p500:40,  p1kg:70,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Cluster beans / கொத்தவரை",         p250:30,  p500:50,  p1kg:80,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Cucumber / வெள்ளரிக்காய்",         p250:0,   p500:30,  p1kg:60,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  { cat:"Vegetables", name:"Drumstick / முருங்கைக்காய்",       p250:10,  p500:0,   p1kg:0,   unit:"Piece", opts:["1","2","3","4","Other"],         available:true },
+  { cat:"Vegetables", name:"Green Chilli / பச்சை மிளகாய்",    p250:10,  p500:0,   p1kg:0,   unit:"100g",  opts:["1","2","3","4","Other"],         available:true },
+  { cat:"Vegetables", name:"Green Papaya / பப்பாளிக்காய்",     p250:0,   p500:30,  p1kg:60,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  { cat:"Vegetables", name:"Ladies Finger Green / வெண்டைக்காய் பச்சை", p250:30, p500:50, p1kg:80, unit:"Kg", opts:[".25","0.5","1","Other"],    available:true },
+  { cat:"Vegetables", name:"Ladies Finger Red / வெண்டைக்காய் சிவப்பு", p250:30, p500:50, p1kg:80, unit:"Kg", opts:[".25","0.5","1","Other"],    available:true },
+  { cat:"Vegetables", name:"Long beans / பொரியல் தட்டை",       p250:30,  p500:50,  p1kg:80,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Mookuthi Avarai / மூக்குத்தி அவரை", p250:30, p500:50, p1kg:80,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Pumpkin / அரசாணிக்காய்",           p250:0,   p500:40,  p1kg:60,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  { cat:"Vegetables", name:"Radish / முள்ளங்கி",               p250:25,  p500:40,  p1kg:60,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Ridge gourd / பீர்க்கங்காய்",      p250:25,  p500:40,  p1kg:70,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Sittu Surai / சிட்டு சுரைக்காய்",  p250:20,  p500:40,  p1kg:60,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Small onion / சின்னவெங்காயம்",     p250:0,   p500:30,  p1kg:50,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  { cat:"Vegetables", name:"Snake gourd / புடலங்காய்",          p250:25,  p500:40,  p1kg:70,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Sundaikai / சுண்டைக்காய்",         p250:20,  p500:0,   p1kg:0,   unit:"150g",  opts:["1","2","3","4","Other"],         available:true },
+  { cat:"Vegetables", name:"Sword Beans / தம்பட்ட அவரை",       p250:25,  p500:40,  p1kg:70,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Tomato Apple / ஆப்பிள் தக்காளி",   p250:0,   p500:30,  p1kg:50,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  { cat:"Vegetables", name:"Tomato Nadu / நாட்டுத் தக்காளி",    p250:0,   p500:30,  p1kg:50,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  { cat:"Vegetables", name:"White Radish / வெள்ளை முள்ளங்கி",  p250:25,  p500:40,  p1kg:60,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  { cat:"Vegetables", name:"Wing Beans / சிறகு அவரை",          p250:30,  p500:50,  p1kg:80,  unit:"Kg",    opts:[".25","0.5","1","Other"],         available:true },
+  // FRUITS
+  { cat:"Fruits", name:"Karpuravalli Banana / கற்பூரவள்ளி வாழை", p250:0, p500:40, p1kg:70,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  { cat:"Fruits", name:"Papaya / பப்பாளி",                      p250:0,   p500:0,   p1kg:60,  unit:"Kg",    opts:["0.750","1","1.5","2"],           available:true },
+  { cat:"Fruits", name:"Red Banana / செவ்வாழை",                 p250:0,   p500:40,  p1kg:70,  unit:"Kg",    opts:["0.5","1","Other"],              available:true },
+  // GREENS
+  { cat:"Greens", name:"Agathi Keerai / அகத்தி கீரை",           p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Arugampul / அருகம்புல்",                 p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Coriander / கொத்தமல்லி தழை",            p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Fenugreek / வெந்தய கீரை",               p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Kadaiyal Keerai / கடையல் கீரை",         p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Manathakkali Keerai / மணத்தக்காளி கீரை", p250:25, p500:0,  p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Mayan Keerai / மாயன் கீரை",             p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Mulaikeerai / முளைக்கீரை",               p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Murungai Keerai / முருங்கை கீரை",       p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Pachathandu Keerai / பச்சை தண்டுக்கீரை", p250:25, p500:0,  p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Palak Keerai / பாலக்கு கீரை",           p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Ponnanganni Keerai / பொன்னாங்கண்ணி கீரை", p250:25, p500:0, p1kg:0,  unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Red Stem Keerai / சிவப்புத் தண்டுக்கீரை", p250:25, p500:0, p1kg:0,  unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Sirukeerai / சிறுகீரை",                  p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Sivapu Pasalai / சிவப்பு பசளைக்கீரை",  p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  { cat:"Greens", name:"Venthiyakeerai / வெந்தியக்கீரை",        p250:25,  p500:0,   p1kg:0,   unit:"Bunch", opts:["1","2","3","4"],                 available:true },
+  // VALUE ADDED
+  { cat:"Value Added Products", name:"A2 Cow Ghee / நாட்டுபசு நெய்",         p250:500, p500:900, p1kg:1800, unit:"Kg",    opts:[".25","0.5","1","Other"], available:true },
+  { cat:"Value Added Products", name:"A2 Cow Butter / நாட்டுபசு வெண்ணெய்",  p250:400, p500:750, p1kg:1500, unit:"Kg",    opts:[".25","0.5","1","Other"], available:true },
+  { cat:"Value Added Products", name:"Country Chicken Eggs / நாட்டுக்கோழி முட்டை", p250:90, p500:0, p1kg:0, unit:"6 nos", opts:["1","2","3","4","Other"], available:true },
+  { cat:"Value Added Products", name:"Duck Eggs / வாத்து முட்டை",            p250:90,  p500:0,   p1kg:0,   unit:"6 nos", opts:["1","2","3","4","Other"], available:true },
+];
+
+var CAT_CONFIG = {
+  "Vegetables":           { emoji:"🥦", cls:"cat-veg" },
+  "Fruits":               { emoji:"🍌", cls:"cat-fruit" },
+  "Greens":               { emoji:"🌿", cls:"cat-green" },
+  "Value Added Products": { emoji:"🧈", cls:"cat-vap" },
+};
+
+// State
+var selections = {}; // itemName → qty string
+
+// ── CALCULATE PRICE ──────────────────────────────────────
+function calcPrice(item, qty) {
+  if (!qty || qty === "") return 0;
+  var isSingle = (item.p500 === 0 && item.p1kg === 0 && item.p250 > 0);
+  if (isSingle) {
+    var n = parseFloat(qty);
+    return isNaN(n) ? null : Math.round(n * item.p250);
+  }
+  if (qty === ".25" || qty === "0.25" || qty === "0.250") return item.p250 > 0 ? item.p250 : null;
+  if (qty === ".5"  || qty === "0.5"  || qty === "0.500") return item.p500 > 0 ? item.p500 : null;
+  if (qty === "1"   || qty === "1.0")                     return item.p1kg > 0 ? item.p1kg : null;
+  var n2 = parseFloat(qty);
+  if (!isNaN(n2) && item.p1kg > 0) return Math.round(n2 * item.p1kg);
+  return null;
+}
+
+function buildPriceHint(item) {
+  if (item.unit === "Bunch")  return "₹" + item.p250 + " per bunch";
+  if (item.unit === "Piece")  return "₹" + item.p250 + " per piece";
+  if (item.unit === "100g")   return "₹" + item.p250 + " per 100g";
+  if (item.unit === "150g")   return "₹" + item.p250 + " per 150g";
+  if (item.unit === "6 nos")  return "₹" + item.p250 + " per 6 nos";
+  var parts = [];
+  if (item.p250 > 0) parts.push("250g=₹" + item.p250);
+  if (item.p500 > 0) parts.push("500g=₹" + item.p500);
+  if (item.p1kg > 0) parts.push("1Kg=₹"  + item.p1kg);
+  return parts.join(" / ");
+}
+
+// ── RENDER ITEMS ─────────────────────────────────────────
+function renderItems() {
+  var container = document.getElementById("itemsContainer");
+  var categories = [];
+  var catMap = {};
+  ITEMS.forEach(function(item) {
+    if (!catMap[item.cat]) { catMap[item.cat] = []; categories.push(item.cat); }
+    catMap[item.cat].push(item);
+  });
+
+  var html = "";
+  categories.forEach(function(cat, cidx) {
+    var cfg   = CAT_CONFIG[cat] || { emoji:"🌱", cls:"cat-veg" };
+    var items = catMap[cat];
+    var avail = items.filter(function(i) { return i.available; }).length;
+
+    html += '<div class="category-block">';
+    html += '<div class="category-header ' + cfg.cls + '" onclick="toggleCat(\'' + cidx + '\')">';
+    html += '<div class="cat-info"><span class="cat-emoji">' + cfg.emoji + '</span>';
+    html += '<span>' + cat + '</span>';
+    html += '<span class="cat-count">' + avail + ' items</span></div>';
+    html += '<span class="cat-toggle" id="toggle-' + cidx + '">▾</span>';
+    html += '</div>';
+    html += '<div class="items-grid' + (cidx === 0 ? ' open' : '') + '" id="grid-' + cidx + '">';
+
+    items.forEach(function(item) {
+      var key      = encodeKey(item.name);
+      var isSingle = (item.p500 === 0 && item.p1kg === 0 && item.p250 > 0);
+      var hasOther = item.opts.indexOf("Other") !== -1;
+
+      html += '<div class="item-row' + (!item.available ? " unavailable" : "") + '" id="row-' + key + '">';
+      html += '<div class="item-info">';
+      html += '<div class="item-name">' + item.name + '</div>';
+      if (!item.available) {
+        html += '<div><span class="unavailable-badge">❌ Not available this week</span></div>';
+      } else {
+        html += '<div class="item-price">' + buildPriceHint(item) + '</div>';
+      }
+      html += '</div>';
+
+      if (item.available) {
+        if (isSingle) {
+          // +/- counter for single unit items
+          html += '<div class="qty-selector">';
+          html += '<button class="qty-btn" onclick="changeCount(\'' + item.name + '\',-1)">−</button>';
+          html += '<div class="qty-display" id="cnt-' + key + '">0</div>';
+          html += '<button class="qty-btn" onclick="changeCount(\'' + item.name + '\',1)">+</button>';
+          html += '</div>';
+        } else {
+          // Dropdown for kg items
+          html += '<select class="qty-dropdown" id="sel-' + key + '" onchange="changeQty(\'' + item.name + '\',this.value)">';
+          html += '<option value="">Select</option>';
+          item.opts.forEach(function(o) {
+            if (o !== "Other") html += '<option value="' + o + '">' + o + ' ' + (item.unit === "Kg" ? "Kg" : item.unit) + '</option>';
+          });
+          if (hasOther) html += '<option value="other_input">Other qty...</option>';
+          html += '</select>';
+        }
+      }
+      html += '</div>';
+    });
+
+    html += '</div></div>';
+  });
+
+  container.innerHTML = html;
+
+  // Set min delivery date to tomorrow
+  var tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById("deliveryDate").min = tomorrow.toISOString().split("T")[0];
+}
+
+function encodeKey(name) {
+  return name.replace(/[^a-zA-Z0-9]/g, "_");
+}
+
+function toggleCat(idx) {
+  var grid   = document.getElementById("grid-" + idx);
+  var toggle = document.getElementById("toggle-" + idx);
+  var isOpen = grid.classList.contains("open");
+  grid.classList.toggle("open", !isOpen);
+  toggle.classList.toggle("open", !isOpen);
+}
+
+// ── QUANTITY CHANGES ─────────────────────────────────────
+function changeCount(itemName, delta) {
+  var key     = encodeKey(itemName);
+  var current = parseInt(selections[itemName] || "0");
+  var next    = Math.max(0, current + delta);
+  if (next === 0) {
+    delete selections[itemName];
+  } else {
+    selections[itemName] = String(next);
+  }
+  var el = document.getElementById("cnt-" + key);
+  if (el) {
+    el.textContent = next;
+    el.classList.toggle("has-value", next > 0);
+  }
+  updateTotal();
+}
+
+function changeQty(itemName, value) {
+  var key = encodeKey(itemName);
+  var sel = document.getElementById("sel-" + key);
+
+  if (value === "other_input") {
+    var custom = prompt("Enter custom quantity for " + itemName + ":");
+    if (custom && custom.trim() !== "") {
+      selections[itemName] = custom.trim();
+      // Add custom option to dropdown
+      var opt = document.createElement("option");
+      opt.value = custom.trim();
+      opt.text  = custom.trim() + " (custom)";
+      sel.appendChild(opt);
+      sel.value = custom.trim();
+      sel.classList.add("has-value");
+    } else {
+      sel.value = "";
+      delete selections[itemName];
+      sel.classList.remove("has-value");
+    }
+  } else if (value === "") {
+    delete selections[itemName];
+    if (sel) sel.classList.remove("has-value");
+  } else {
+    selections[itemName] = value;
+    if (sel) sel.classList.add("has-value");
+  }
+  updateTotal();
+}
+
+// ── UPDATE TOTAL ─────────────────────────────────────────
+function updateTotal() {
+  var total     = 0;
+  var itemCount = 0;
+  var hasUnknown = false;
+
+  Object.keys(selections).forEach(function(itemName) {
+    var qty  = selections[itemName];
+    var item = ITEMS.find(function(i) { return i.name === itemName; });
+    if (!item || !qty) return;
+    var amt = calcPrice(item, qty);
+    if (amt === null) { hasUnknown = true; return; }
+    total += amt;
+    itemCount++;
+  });
+
+  document.getElementById("totalAmount").textContent = "₹" + total;
+  var countLabel = itemCount === 0 ? "No items selected" :
+    itemCount + " item" + (itemCount > 1 ? "s" : "") + " selected";
+  if (hasUnknown) countLabel += " + custom qty";
+  document.getElementById("totalItems").textContent = countLabel;
+
+  var hint = document.getElementById("deliveryHint");
+  if (total === 0) {
+    hint.textContent  = "+₹100 delivery";
+    hint.className    = "total-hint hint-charge";
+  } else if (total >= 500) {
+    hint.textContent  = "✅ Free delivery";
+    hint.className    = "total-hint hint-free";
+  } else {
+    hint.textContent  = "₹" + (500 - total) + " to free delivery";
+    hint.className    = "total-hint hint-charge";
+  }
+
+  var btn = document.getElementById("reviewBtn");
+  btn.disabled = (itemCount === 0 && !hasUnknown);
+}
+
+// ── REVIEW MODAL ─────────────────────────────────────────
+function openReview() {
+  // Validate customer details
+  var name    = document.getElementById("customerName").value.trim();
+  var phone   = document.getElementById("phone").value.trim();
+  var date    = document.getElementById("deliveryDate").value;
+  var address = document.getElementById("address").value.trim();
+
+  if (!name || !phone || !date || !address) {
+    alert("Please fill in all required customer details before reviewing your order.");
+    return;
+  }
+  if (!/^[6-9][0-9]{9}$/.test(phone)) {
+    alert("Please enter a valid 10-digit mobile number.");
+    return;
+  }
+
+  buildSummary();
+  document.getElementById("summaryView").style.display = "block";
+  document.getElementById("successView").classList.remove("show");
+  document.getElementById("modalOverlay").classList.add("show");
+}
+
+function closeReview() {
+  document.getElementById("modalOverlay").classList.remove("show");
+}
+
+function buildSummary() {
+  var cats   = ["Vegetables","Fruits","Greens","Value Added Products"];
+  var html   = "";
+  var total  = 0;
+  var deliv  = 0;
+
+  cats.forEach(function(cat) {
+    var catItems = ITEMS.filter(function(i) {
+      return i.cat === cat && selections[i.name];
+    });
+    if (catItems.length === 0) return;
+
+    html += '<div class="summary-cat-label">' + CAT_CONFIG[cat].emoji + "  " + cat + '</div>';
+    catItems.forEach(function(item) {
+      var qty = selections[item.name];
+      var amt = calcPrice(item, qty);
+      var amtStr = amt === null ? "₹TBD" : "₹" + amt;
+      if (amt !== null) total += amt;
+      html += '<div class="summary-item">';
+      html += '<div class="summary-item-name">' + item.name + '</div>';
+      html += '<span class="summary-item-qty">' + qty + ' ' + item.unit + '</span>';
+      html += '<div class="summary-item-amt">' + amtStr + '</div>';
+      html += '</div>';
+    });
+  });
+
+  if (!html) {
+    document.getElementById("summaryItems").innerHTML =
+      '<div class="empty-cart">No items selected.</div>';
+    return;
+  }
+  document.getElementById("summaryItems").innerHTML = html;
+
+  // Delivery charge
+  deliv = total >= 500 ? 0 : 100;
+  var grandTotal = total + deliv;
+
+  var totHtml = '<div class="summary-row"><span>Subtotal</span><strong>₹' + total + '</strong></div>';
+  totHtml += '<div class="summary-row"><span>Delivery Charge</span><span>' +
+    (deliv === 0 ? '<span style="color:#15803d;font-weight:600">✅ Free</span>' : '₹100') + '</span></div>';
+  totHtml += '<div class="summary-row total"><span>Total Amount</span><span>₹' + grandTotal + '</span></div>';
+
+  var noteClass = deliv === 0 ? "delivery-note note-free" : "delivery-note note-charge";
+  var noteText  = deliv === 0
+    ? "🎉 You qualify for free delivery!"
+    : "Add ₹" + (500 - total) + " more to get free delivery";
+  totHtml += '<div class="' + noteClass + '">' + noteText + '</div>';
+
+  document.getElementById("summaryTotals").innerHTML = totHtml;
+  document.getElementById("modalSubtitle").textContent =
+    Object.keys(selections).length + " items | Total ₹" + grandTotal;
+}
+
+// ── PLACE ORDER ──────────────────────────────────────────
+function placeOrder() {
+  if (!document.getElementById("termsCheck").checked) {
+    alert("Please accept the Terms of Supply to continue.");
+    return;
+  }
+
+  var name     = document.getElementById("customerName").value.trim();
+  var phone    = document.getElementById("phone").value.trim();
+  var date     = document.getElementById("deliveryDate").value;
+  var address  = document.getElementById("address").value.trim();
+  var landmark = document.getElementById("landmark").value.trim();
+
+  // Build payload
+  var payload = {
+    customerName:    name,
+    phone:           phone,
+    deliveryDate:    date,
+    deliveryAddress: address,
+    landmark:        landmark,
+    items:           selections,
+    source:          "web",
+  };
+
+  var btn = document.getElementById("submitBtn");
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="loading-spinner"></span> Placing Order...';
+
+  // Submit to Apps Script
+  fetch(SCRIPT_URL, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify(payload),
+    mode:    "no-cors",
+  })
+  .then(function() {
+    showSuccess(name, phone, date, address, landmark);
+  })
+  .catch(function(err) {
+    // no-cors mode always triggers catch — treat as success
+    showSuccess(name, phone, date, address, landmark);
+  });
+}
+
+function showSuccess(name, phone, date, address, landmark) {
+  var total = 0;
+  Object.keys(selections).forEach(function(itemName) {
+    var item = ITEMS.find(function(i) { return i.name === itemName; });
+    var amt  = item ? calcPrice(item, selections[itemName]) : null;
+    if (amt !== null) total += amt;
+  });
+  var deliv      = total >= 500 ? 0 : 100;
+  var grandTotal = total + deliv;
+
+  // Build WhatsApp message
+  var lines = [];
+  Object.keys(selections).forEach(function(itemName) {
+    var item = ITEMS.find(function(i) { return i.name === itemName; });
+    var qty  = selections[itemName];
+    var amt  = item ? calcPrice(item, qty) : null;
+    var unit = item ? item.unit : "";
+    lines.push("• " + itemName + "  —  " + qty + " " + unit +
+      (amt !== null ? "  =  ₹" + amt : "  =  ₹TBD"));
+  });
+
+  var msg =
+    "🌿 *Kappiyam Organic Farm*\n" +
+    "*Your Family Farmer*\n" +
+    "──────────────────────\n" +
+    "*Order Confirmation*\n\n" +
+    "👤 *Name:* " + name + "\n" +
+    "📅 *Delivery Date:* " + date + "\n" +
+    "📍 *Address:* " + address +
+      (landmark ? "  (Near: " + landmark + ")" : "") + "\n\n" +
+    "*Items Ordered:*\n" +
+    lines.join("\n") + "\n\n" +
+    "──────────────────────\n" +
+    "*Subtotal:  ₹" + total + "*\n" +
+    "*Delivery:  " + (deliv === 0 ? "✅ Free" : "₹100") + "*\n" +
+    "*Total:  ₹" + grandTotal + "*\n\n" +
+    "_We will confirm availability shortly._\n" +
+    "📞 9003889666  |  🌐 www.kappiyam.in";
+
+  var cleanPhone = phone.replace(/[^0-9]/g, "");
+  if (cleanPhone.length === 10) cleanPhone = "91" + cleanPhone;
+  var waUrl = "https://wa.me/" + cleanPhone + "?text=" + encodeURIComponent(msg);
+
+  document.getElementById("successMsg").innerHTML =
+    "Thank you <strong>" + name + "</strong>! Your order of <strong>₹" + grandTotal +
+    "</strong> has been received.<br><br>Tap below to send yourself a WhatsApp confirmation.";
+
+  document.getElementById("waBtn").href = waUrl;
+  document.getElementById("summaryView").style.display  = "none";
+  document.getElementById("successView").classList.add("show");
+}
+
+function newOrder() {
+  selections = {};
+  document.getElementById("modalOverlay").classList.remove("show");
+  document.getElementById("itemsContainer").innerHTML = "";
+  renderItems();
+  updateTotal();
+  document.getElementById("customerName").value = "";
+  document.getElementById("phone").value        = "";
+  document.getElementById("deliveryDate").value = "";
+  document.getElementById("address").value      = "";
+  document.getElementById("landmark").value     = "";
+}
+
+var AVAILABILITY_DATA = {};
+
+// Init — availability injected server-side by Apps Script
+function init() {
+  // AVAILABILITY_DATA is injected by Apps Script doGet()
+  // It looks like: var AVAILABILITY_DATA = {"item name": true/false, ...}
+  if (typeof AVAILABILITY_DATA !== "undefined") {
+    ITEMS.forEach(function(item) {
+      if (AVAILABILITY_DATA[item.name] !== undefined) {
+        item.available = AVAILABILITY_DATA[item.name];
+      }
+    });
+    console.log("✅ Availability loaded.");
+  }
+  renderItems();
+  updateTotal();
+}
+
+init();
+</script>
+</body>
+</html>
