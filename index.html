@@ -1,0 +1,749 @@
+// ============================================================
+//  PHASE 3 — Customer PIN + Order History + Seasonal + Driver Sheet
+//  Add all functions to your existing Apps Script
+//  Replace doGet, doPost, onOpen with versions below
+// ============================================================
+
+
+// ── SETUP CUSTOMERS SHEET ────────────────────────────────
+function setupCustomersSheet() {
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Customers");
+  if (sheet) {
+    SpreadsheetApp.getUi().alert("Customers sheet already exists!");
+    return;
+  }
+  sheet = ss.insertSheet("Customers");
+  var headers = ["Phone","Name","PIN","Address","Landmark","Last Order Date","Order Count","Registered Date"];
+  sheet.getRange(1,1,1,headers.length).setValues([headers]);
+  sheet.getRange(1,1,1,headers.length)
+    .setBackground("#209d5c").setFontColor("#ffffff")
+    .setFontWeight("bold").setFontSize(11);
+  sheet.setColumnWidths(1, headers.length, 150);
+  sheet.setColumnWidth(1,130); // Phone
+  sheet.setColumnWidth(2,160); // Name
+  sheet.setColumnWidth(3,80);  // PIN
+  sheet.setColumnWidth(4,280); // Address
+  sheet.setColumnWidth(5,200); // Landmark
+  sheet.setFrozenRows(1);
+  SpreadsheetApp.getUi().alert(
+    "✅ Customers sheet created!\n\n" +
+    "Customer profiles will be auto-created\n" +
+    "when orders are placed from the website."
+  );
+}
+
+
+// ── GET CUSTOMER BY PHONE ─────────────────────────────────
+// Returns customer info WITHOUT PIN (safe to send to browser)
+function getCustomerByPhone(phone) {
+  try {
+    var ss    = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName("Customers");
+    if (!sheet) return { found: false };
+
+    var cleanPhone = phone.replace(/[^0-9]/g,"");
+    if (cleanPhone.length === 10) cleanPhone = "91" + cleanPhone;
+
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) return { found: false };
+
+    var data = sheet.getRange(2,1,lastRow-1,8).getValues();
+    for (var i = 0; i < data.length; i++) {
+      var rowPhone = data[i][0].toString().replace(/[^0-9]/g,"");
+      if (rowPhone.length === 10) rowPhone = "91" + rowPhone;
+      if (rowPhone === cleanPhone) {
+        return {
+          found:      true,
+          name:       data[i][1].toString(),
+          address:    data[i][3].toString(),
+          landmark:   data[i][4].toString(),
+          orderCount: parseInt(data[i][6]) || 0,
+          lastOrder:  data[i][5].toString()
+        };
+      }
+    }
+    return { found: false };
+  } catch(err) {
+    return { found: false, error: err.message };
+  }
+}
+
+
+// ── VERIFY PIN + RETURN ORDER HISTORY ────────────────────
+function verifyCustomerPin(phone, pin) {
+  try {
+    var ss    = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName("Customers");
+    if (!sheet) return { verified: false, reason: "no_sheet" };
+
+    var cleanPhone = phone.replace(/[^0-9]/g,"");
+    if (cleanPhone.length === 10) cleanPhone = "91" + cleanPhone;
+
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) return { verified: false, reason: "not_found" };
+
+    var data = sheet.getRange(2,1,lastRow-1,8).getValues();
+    for (var i = 0; i < data.length; i++) {
+      var rowPhone = data[i][0].toString().replace(/[^0-9]/g,"");
+      if (rowPhone.length === 10) rowPhone = "91" + rowPhone;
+      if (rowPhone === cleanPhone) {
+        var storedPin = data[i][2].toString().trim();
+        if (storedPin !== pin.toString().trim()) {
+          return { verified: false, reason: "wrong_pin" };
+        }
+        // PIN correct — fetch order history
+        var orders = getOrderHistoryForPhone(phone, 3);
+        return {
+          verified:   true,
+          name:       data[i][1].toString(),
+          address:    data[i][3].toString(),
+          landmark:   data[i][4].toString(),
+          orderCount: parseInt(data[i][6]) || 0,
+          orders:     orders
+        };
+      }
+    }
+    return { verified: false, reason: "not_found" };
+  } catch(err) {
+    return { verified: false, reason: "error", error: err.message };
+  }
+}
+
+
+// ── GET ORDER HISTORY FOR PHONE ───────────────────────────
+function getOrderHistoryForPhone(phone, limit) {
+  try {
+    var ss    = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName("Orders");
+    if (!sheet || sheet.getLastRow() < 2) return [];
+
+    var cleanPhone = phone.replace(/[^0-9]/g,"");
+    if (cleanPhone.length === 10) cleanPhone = "91" + cleanPhone;
+
+    var lastRow  = sheet.getLastRow();
+    var lastCol  = sheet.getLastColumn();
+    var headers  = sheet.getRange(1,1,1,lastCol).getValues()[0];
+    var data     = sheet.getRange(2,1,lastRow-1,lastCol).getValues();
+
+    var phoneCol   = 3;  // Col D (0-indexed = 3)
+    var orderIdCol = headers.indexOf("Order ID");
+    var dateCol    = headers.indexOf("Delivery Date") >= 0 ? headers.indexOf("Delivery Date") : 4;
+    var totalCol   = headers.indexOf("Grand Total") >= 0 ? headers.indexOf("Grand Total") : -1;
+    var statusCol  = headers.indexOf("Order Status") >= 0 ? headers.indexOf("Order Status") : -1;
+
+    // Collect item columns (between landmark and grand total)
+    var itemStart = headers.indexOf("Landmark") + 1;
+    // skip Order Status column
+    var itemEnd   = totalCol > 0 ? totalCol : lastCol;
+
+    var matches = [];
+    for (var i = data.length - 1; i >= 0; i--) {
+      var rowPhone = data[i][phoneCol] ? data[i][phoneCol].toString().replace(/[^0-9]/g,"") : "";
+      if (rowPhone.length === 10) rowPhone = "91" + rowPhone;
+      if (rowPhone === cleanPhone) {
+        // Build items list
+        var items = [];
+        for (var j = itemStart; j < itemEnd; j++) {
+          if (data[i][j] && data[i][j] !== "" && data[i][j] !== false) {
+            items.push(headers[j] + " × " + data[i][j]);
+          }
+        }
+        matches.push({
+          orderId:  orderIdCol >= 0 ? data[i][orderIdCol].toString() : "N/A",
+          date:     data[i][dateCol] ? data[i][dateCol].toString() : "",
+          total:    totalCol >= 0 ? data[i][totalCol].toString() : "",
+          status:   statusCol >= 0 ? data[i][statusCol].toString() : "📥 Received",
+          items:    items.slice(0, 5) // max 5 items shown
+        });
+        if (matches.length >= (limit || 3)) break;
+      }
+    }
+    return matches;
+  } catch(err) {
+    Logger.log("getOrderHistory error: " + err.message);
+    return [];
+  }
+}
+
+
+// ── UPSERT CUSTOMER ───────────────────────────────────────
+function upsertCustomer(phone, name, address, landmark, pin) {
+  try {
+    var ss    = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName("Customers");
+    if (!sheet) return;
+
+    var cleanPhone = phone.replace(/[^0-9]/g,"");
+
+    var lastRow = sheet.getLastRow();
+    var now     = new Date();
+
+    if (lastRow >= 2) {
+      var phones = sheet.getRange(2,1,lastRow-1,1).getValues();
+      for (var i = 0; i < phones.length; i++) {
+        var rp = phones[i][0].toString().replace(/[^0-9]/g,"");
+        if (rp === cleanPhone) {
+          // Update existing customer
+          var rowNum = i + 2;
+          sheet.getRange(rowNum,2).setValue(name);
+          sheet.getRange(rowNum,4).setValue(address);
+          sheet.getRange(rowNum,5).setValue(landmark);
+          sheet.getRange(rowNum,6).setValue(Utilities.formatDate(now, Session.getScriptTimeZone(), "dd MMM yyyy"));
+          // Update PIN only if provided and current PIN is empty
+          var currentPin = sheet.getRange(rowNum,3).getValue().toString().trim();
+          if (pin && currentPin === "") {
+            sheet.getRange(rowNum,3).setValue(pin);
+          }
+          // Increment order count
+          var count = parseInt(sheet.getRange(rowNum,7).getValue()) || 0;
+          sheet.getRange(rowNum,7).setValue(count + 1);
+          return;
+        }
+      }
+    }
+
+    // New customer
+    var newRow = [
+      cleanPhone, name, pin || "", address, landmark,
+      Utilities.formatDate(now, Session.getScriptTimeZone(), "dd MMM yyyy"),
+      1,
+      Utilities.formatDate(now, Session.getScriptTimeZone(), "dd MMM yyyy")
+    ];
+    sheet.appendRow(newRow);
+
+    // Alternate row color
+    var newRowNum = sheet.getLastRow();
+    var bg = (newRowNum % 2 === 0) ? "#ffffff" : "#eef7f2";
+    sheet.getRange(newRowNum,1,1,8).setBackground(bg);
+
+  } catch(err) {
+    Logger.log("upsertCustomer error: " + err.message);
+  }
+}
+
+
+// ── GENERATE DRIVER SHEET ─────────────────────────────────
+function generateDriverSheetMenu() {
+  var ui    = SpreadsheetApp.getUi();
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Delivery Dates");
+
+  if (!sheet) {
+    ui.alert("❌ Delivery Dates sheet not found.");
+    return;
+  }
+
+  // Get open dates
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) {
+    ui.alert("❌ No delivery dates found.");
+    return;
+  }
+
+  var data  = sheet.getRange(2,1,lastRow-1,2).getValues();
+  var dates = [];
+  data.forEach(function(row) {
+    var d = row[0].toString().trim();
+    var s = row[1].toString().trim();
+    if (d) dates.push(d + " [" + s + "]");
+  });
+
+  if (dates.length === 0) {
+    ui.alert("❌ No dates found.");
+    return;
+  }
+
+  var resp = ui.prompt(
+    "🚚 Generate Driver Delivery Sheet",
+    "Enter delivery date exactly as shown:\n\n" + dates.join("\n") + "\n\nDate:",
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (resp.getSelectedButton() !== ui.Button.OK) return;
+
+  var inputDate = resp.getResponseText().trim().replace(/\s*\[.*\]/, "");
+  if (!inputDate) { ui.alert("❌ No date entered."); return; }
+
+  generateDriverSheet(inputDate);
+}
+
+
+function generateDriverSheet(dateLabel) {
+  var ui = SpreadsheetApp.getUi();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  var ordersSheet = ss.getSheetByName("Orders");
+  if (!ordersSheet || ordersSheet.getLastRow() < 2) {
+    ui.alert("❌ No orders found.");
+    return;
+  }
+
+  var lastRow  = ordersSheet.getLastRow();
+  var lastCol  = ordersSheet.getLastColumn();
+  var headers  = ordersSheet.getRange(1,1,1,lastCol).getValues()[0];
+  var data     = ordersSheet.getRange(2,1,lastRow-1,lastCol).getValues();
+
+  var orderIdCol  = headers.indexOf("Order ID");
+  var nameCol     = headers.indexOf("Customer Name") >= 0 ? headers.indexOf("Customer Name") : 2;
+  var phoneCol    = headers.indexOf("Phone") >= 0 ? headers.indexOf("Phone") : 3;
+  var dateCol     = headers.indexOf("Delivery Date") >= 0 ? headers.indexOf("Delivery Date") : 4;
+  var addrCol     = headers.indexOf("Address") >= 0 ? headers.indexOf("Address") : 5;
+  var lmkCol      = headers.indexOf("Landmark") >= 0 ? headers.indexOf("Landmark") : 6;
+  var statusCol   = headers.indexOf("Order Status") >= 0 ? headers.indexOf("Order Status") : -1;
+  var totalCol    = headers.indexOf("Grand Total") >= 0 ? headers.indexOf("Grand Total") : -1;
+  var paymentCol  = headers.indexOf("Payment Status") >= 0 ? headers.indexOf("Payment Status") : -1;
+
+  var itemStart = headers.indexOf("Landmark") + 1;
+  var itemEnd   = totalCol > 0 ? totalCol : lastCol;
+
+  // Filter orders for this date
+  var dayOrders = data.filter(function(row) {
+    var d = row[dateCol] ? row[dateCol].toString().trim() : "";
+    return d === dateLabel;
+  });
+
+  if (dayOrders.length === 0) {
+    ui.alert("❌ No orders found for " + dateLabel + ".");
+    return;
+  }
+
+  // Delete existing driver sheet for this date
+  var sheetName = "Driver - " + dateLabel;
+  var existing  = ss.getSheetByName(sheetName);
+  if (existing) ss.deleteSheet(existing);
+
+  var driverSheet = ss.insertSheet(sheetName);
+
+  // Header row
+  var dHeaders = ["#","Order ID","Customer Name","Phone","Address","Landmark","Items","Total","Payment","✓ Delivered"];
+  driverSheet.getRange(1,1,1,dHeaders.length).setValues([dHeaders]);
+  driverSheet.getRange(1,1,1,dHeaders.length)
+    .setBackground("#0d5c33").setFontColor("#ffffff")
+    .setFontWeight("bold").setFontSize(11);
+
+  // Title row (insert above header)
+  driverSheet.insertRowBefore(1);
+  driverSheet.getRange(1,1,1,dHeaders.length).merge()
+    .setValue("🚚 Kappiyam Organic Farm — Delivery Sheet: " + dateLabel)
+    .setBackground("#209d5c").setFontColor("#ffffff")
+    .setFontWeight("bold").setFontSize(13)
+    .setHorizontalAlignment("center");
+
+  // Data rows
+  var rows = [];
+  dayOrders.forEach(function(row, idx) {
+    // Build items summary
+    var itemSummary = [];
+    for (var j = itemStart; j < itemEnd; j++) {
+      if (row[j] && row[j] !== "" && row[j] !== false && headers[j]) {
+        // Short name: take first word before /
+        var shortName = headers[j].split("/")[0].trim();
+        itemSummary.push(shortName + " " + row[j]);
+      }
+    }
+
+    var payment = paymentCol >= 0 ? row[paymentCol].toString() : "";
+    var total   = totalCol >= 0 ? "₹" + row[totalCol] : "";
+    var orderId = orderIdCol >= 0 ? row[orderIdCol].toString() : "";
+
+    rows.push([
+      idx + 1,
+      orderId,
+      row[nameCol] || "",
+      row[phoneCol] || "",
+      row[addrCol]  || "",
+      row[lmkCol]   || "",
+      itemSummary.join(", "),
+      total,
+      payment,
+      false // delivered checkbox
+    ]);
+  });
+
+  if (rows.length > 0) {
+    var dataRange = driverSheet.getRange(3, 1, rows.length, dHeaders.length);
+    dataRange.setValues(rows);
+
+    // Insert checkboxes in last column
+    driverSheet.getRange(3, dHeaders.length, rows.length, 1).insertCheckboxes();
+
+    // Alternate row colors
+    rows.forEach(function(_, i) {
+      var bg = i % 2 === 0 ? "#ffffff" : "#eef7f2";
+      driverSheet.getRange(i + 3, 1, 1, dHeaders.length).setBackground(bg);
+    });
+  }
+
+  // Column widths
+  driverSheet.setColumnWidth(1, 40);   // #
+  driverSheet.setColumnWidth(2, 140);  // Order ID
+  driverSheet.setColumnWidth(3, 160);  // Name
+  driverSheet.setColumnWidth(4, 120);  // Phone
+  driverSheet.setColumnWidth(5, 250);  // Address
+  driverSheet.setColumnWidth(6, 180);  // Landmark
+  driverSheet.setColumnWidth(7, 300);  // Items
+  driverSheet.setColumnWidth(8, 80);   // Total
+  driverSheet.setColumnWidth(9, 180);  // Payment
+  driverSheet.setColumnWidth(10, 80);  // Delivered
+
+  // Row height
+  driverSheet.setRowHeights(3, rows.length, 40);
+
+  // Freeze header rows
+  driverSheet.setFrozenRows(2);
+
+  // Summary row
+  var sumRow = rows.length + 3;
+  driverSheet.getRange(sumRow, 1, 1, 3).merge()
+    .setValue("Total Orders: " + rows.length)
+    .setBackground("#d4edda").setFontWeight("bold");
+
+  // Border all
+  driverSheet.getRange(2, 1, rows.length + 1, dHeaders.length)
+    .setBorder(true, true, true, true, true, true, "#c8e0d0", SpreadsheetApp.BorderStyle.SOLID);
+
+  // Activate the sheet
+  ss.setActiveSheet(driverSheet);
+
+  ui.alert(
+    "✅ Driver Sheet Generated!\n\n" +
+    "Date: " + dateLabel + "\n" +
+    "Orders: " + rows.length + "\n\n" +
+    "Sheet name: " + sheetName
+  );
+}
+
+
+// ── UPDATED syncAvailabilityToGitHub ─────────────────────
+// Replace your existing function with this version
+// It now includes seasonal tags from ItemList column H
+function syncAvailabilityToGitHub() {
+  var ui = SpreadsheetApp.getUi();
+  try {
+    var ss        = SpreadsheetApp.getActiveSpreadsheet();
+    var itemSheet = ss.getSheetByName(CONFIG.itemListSheet);
+    var dateSheet = ss.getSheetByName("Delivery Dates");
+
+    var availability = {};
+    var itemsData    = [];
+    var currentCat   = "Vegetables";
+    var catMap = {
+      "▶ Vegetables":           "Vegetables",
+      "▶ Fruits":               "Fruits",
+      "▶ Greens":               "Greens",
+      "▶ Value Added Products": "Value Added Products"
+    };
+
+    function getOptions(unit, name) {
+      if (unit === "Bunch") return ["1","2","3","4"];
+      if (unit === "Piece" || unit === "100g" || unit === "150g" || unit === "6 nos")
+        return ["1","2","3","4","Other"];
+      if (name && name.indexOf("Papaya") !== -1 && unit === "Kg")
+        return ["0.750","1","1.5","2"];
+      if (name && (name.indexOf("Ash gourd") !== -1 || name.indexOf("Pumpkin") !== -1 ||
+          name.indexOf("Cucumber") !== -1 || name.indexOf("Small onion") !== -1 ||
+          name.indexOf("Tomato") !== -1 || name.indexOf("Green Papaya") !== -1 ||
+          name.indexOf("Bottle gourd Long") !== -1 || name.indexOf("Banana /") !== -1 ||
+          name.indexOf("Red Banana") !== -1))
+        return ["0.5","1","Other"];
+      return [".25","0.5","1","Other"];
+    }
+
+    if (itemSheet) {
+      var lastRow = itemSheet.getLastRow();
+      if (lastRow > 1) {
+        var data = itemSheet.getRange(2, 1, lastRow - 1, 8).getValues();
+        data.forEach(function(row) {
+          var name     = row[0].toString().trim();
+          var avail    = row[6].toString().trim().toUpperCase();
+          var seasonal = row[7] ? row[7].toString().trim().toUpperCase() === "S" : false;
+          if (!name) return;
+          if (name.indexOf("▶") === 0) { currentCat = catMap[name] || currentCat; return; }
+          var isAvail = (avail === "Y");
+          availability[name] = isAvail;
+          if (isAvail) {
+            itemsData.push({
+              cat:      currentCat, name: name,
+              p250:     parseFloat(row[1]) || 0,
+              p500:     parseFloat(row[2]) || 0,
+              p1kg:     parseFloat(row[3]) || 0,
+              unit:     row[4].toString().trim(),
+              opts:     getOptions(row[4].toString().trim(), name),
+              seasonal: seasonal,
+              available: true
+            });
+          }
+        });
+      }
+    }
+
+    // Read delivery dates + stock
+    var deliveryDates = [];
+    var stockByDate   = {};
+    var now = new Date();
+
+    if (dateSheet) {
+      var dateLastRow = dateSheet.getLastRow();
+      if (dateLastRow > 1) {
+        var dateData = dateSheet.getRange(2,1,dateLastRow-1,3).getValues();
+        dateData.forEach(function(row) {
+          var dateStr = row[0].toString().trim();
+          var status  = row[1].toString().trim();
+          var notes   = row[2].toString().trim();
+          if (!dateStr || status !== "Open") return;
+          var parts = dateStr.split(" ");
+          var d = (parts.length === 3) ? new Date(parts[1]+" "+parts[0]+" "+parts[2]) : new Date(dateStr);
+          if (isNaN(d.getTime())) return;
+          var cutoff = new Date(d); cutoff.setHours(7,0,0,0);
+          if (now >= cutoff) return;
+          deliveryDates.push({ date: dateStr, notes: notes });
+        });
+      }
+    }
+
+    var stockSheet = ss.getSheetByName("Stock");
+    if (stockSheet && deliveryDates.length > 0) {
+      var sLastRow = stockSheet.getLastRow();
+      var sLastCol = stockSheet.getLastColumn();
+      if (sLastRow > 1 && sLastCol > 2) {
+        var sHeaders = stockSheet.getRange(1,1,1,sLastCol).getValues()[0];
+        var sData    = stockSheet.getRange(2,1,sLastRow-1,sLastCol).getValues();
+        deliveryDates.forEach(function(d) {
+          var colIdx = sHeaders.indexOf(d.date);
+          if (colIdx === -1) return;
+          var stock = {};
+          sData.forEach(function(row) {
+            var n = row[0].toString().trim();
+            if (n) stock[n] = parseFloat(row[colIdx]) || 0;
+          });
+          stockByDate[d.date] = stock;
+        });
+      }
+    }
+
+    var available   = itemsData.length;
+    var unavailable = Object.keys(availability).length - available;
+    var seasonal    = itemsData.filter(function(i) { return i.seasonal; }).length;
+
+    var confirm = ui.alert(
+      "🔄 Sync to Website",
+      "Ready to update kappiyam.github.io/Order\n\n" +
+      "✅ Items: " + available + " available, " + unavailable + " hidden\n" +
+      "🌱 Seasonal: " + seasonal + " items\n" +
+      "📅 Delivery dates: " + deliveryDates.length + " open\n\n" +
+      "Continue?",
+      ui.ButtonSet.YES_NO
+    );
+    if (confirm !== ui.Button.YES) return;
+
+    // Get file from GitHub
+    var getResp = UrlFetchApp.fetch(
+      "https://api.github.com/repos/" + GITHUB_CONFIG.owner + "/" +
+      GITHUB_CONFIG.repo + "/contents/" + GITHUB_CONFIG.file + "?ref=" + GITHUB_CONFIG.branch,
+      { method:"GET", headers:{ "Authorization":"token "+GITHUB_CONFIG.token, "Accept":"application/vnd.github.v3+json" }, muteHttpExceptions:true }
+    );
+    var getJson = JSON.parse(getResp.getContentText());
+    if (!getJson.sha) { ui.alert("❌ Could not get file from GitHub.\n\n" + getResp.getContentText()); return; }
+
+    var fileSha     = getJson.sha;
+    var currentHtml = Utilities.newBlob(Utilities.base64Decode(getJson.content.replace(/\n/g,""))).getDataAsString();
+
+    var updatedHtml = currentHtml
+      .replace(/var AVAILABILITY_DATA\s*=\s*\{[^;]*\};/,  "var AVAILABILITY_DATA = "  + JSON.stringify(availability)  + ";")
+      .replace(/var ITEMS_DATA_OVERRIDE\s*=\s*\[[^\]]*\];/,"var ITEMS_DATA_OVERRIDE = " + JSON.stringify(itemsData)    + ";")
+      .replace(/var DELIVERY_DATES\s*=\s*\[[^\]]*\];/,     "var DELIVERY_DATES = "      + JSON.stringify(deliveryDates) + ";")
+      .replace(/var STOCK_BY_DATE\s*=\s*\{[^;]*\};/,       "var STOCK_BY_DATE = "       + JSON.stringify(stockByDate)   + ";");
+
+    if (updatedHtml === currentHtml) {
+      ui.alert("⚠️ Could not find data placeholders in index.html.\nPlease upload the latest phase3_index.html to GitHub first.");
+      return;
+    }
+
+    var putResp = UrlFetchApp.fetch(
+      "https://api.github.com/repos/" + GITHUB_CONFIG.owner + "/" + GITHUB_CONFIG.repo + "/contents/" + GITHUB_CONFIG.file,
+      { method:"PUT",
+        headers:{ "Authorization":"token "+GITHUB_CONFIG.token, "Accept":"application/vnd.github.v3+json", "Content-Type":"application/json" },
+        payload: JSON.stringify({ message:"Sync: "+available+" items, "+deliveryDates.length+" dates", content:Utilities.base64Encode(Utilities.newBlob(updatedHtml).getBytes()), sha:fileSha, branch:GITHUB_CONFIG.branch }),
+        muteHttpExceptions:true }
+    );
+    var putJson = JSON.parse(putResp.getContentText());
+    if (putJson.content && putJson.content.sha) {
+      ui.alert("✅ Website Updated!\n\nItems: "+available+" showing\nSeasonal: "+seasonal+"\nDates: "+deliveryDates.length+"\n\nkappiyam.github.io/Order updates in 1-2 minutes.");
+    } else {
+      ui.alert("❌ GitHub update failed:\n\n" + putResp.getContentText());
+    }
+  } catch(err) {
+    ui.alert("❌ Error: " + err.message);
+    Logger.log(err.stack);
+  }
+}
+
+
+// ── UPDATED doGet ─────────────────────────────────────────
+function doGet(e) {
+  try {
+    var action = e && e.parameter ? e.parameter.action : "";
+
+    // Track order
+    if (action === "trackOrder") {
+      var result = getOrderStatus(e.parameter.phone || "", e.parameter.orderId || "");
+      return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Get customer (check if returning)
+    if (action === "getCustomer") {
+      var customer = getCustomerByPhone(e.parameter.phone || "");
+      return ContentService.createTextOutput(JSON.stringify(customer)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Verify PIN + get order history
+    if (action === "verifyPin") {
+      var result = verifyCustomerPin(e.parameter.phone || "", e.parameter.pin || "");
+      return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Default: return items/dates/stock (not used at runtime but useful for testing)
+    return ContentService.createTextOutput(JSON.stringify({ status:"ok", message:"Use sync function to bake data into HTML." })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({ status:"error", message:err.message })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+
+// ── UPDATED doPost ────────────────────────────────────────
+function doPost(e) {
+  try {
+    var payload = JSON.parse(e.postData.contents);
+
+    if (payload.action === "updatePayment") {
+      var updated = updatePaymentStatus(payload.customerName, payload.phone, payload.deliveryDate, payload.status);
+      return ContentService.createTextOutput(JSON.stringify({ status: updated ? "success" : "notfound" })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var ss          = SpreadsheetApp.getActiveSpreadsheet();
+    var ordersSheet = ss.getSheetByName("Orders");
+    if (!ordersSheet) throw new Error("Orders sheet not found.");
+
+    var customerName    = (payload.customerName    || "").trim();
+    var phone           = (payload.phone           || "").trim();
+    var deliveryDate    = (payload.deliveryDate    || "").trim();
+    var deliveryAddress = (payload.deliveryAddress || "").trim();
+    var landmark        = (payload.landmark        || "").trim();
+    var itemsMap        = payload.items      || {};
+    var orderId         = payload.orderId    || generateOrderId();
+    var grandTotal      = payload.grandTotal || 0;
+    var pin             = payload.pin        || "";
+    var timestamp       = new Date();
+
+    // 7AM cutoff check
+    var dates = getAvailableDeliveryDates();
+    if (!dates.some(function(d) { return d.date === deliveryDate; })) {
+      return ContentService.createTextOutput(JSON.stringify({ status:"cutoff", message:"Orders for "+deliveryDate+" are closed." })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Server-side stock check
+    var stock = getStockForDate(deliveryDate);
+    var stockErrors = [];
+    Object.keys(itemsMap).forEach(function(itemName) {
+      var ordered = parseFloat(itemsMap[itemName]) || 0;
+      var avail   = stock[itemName] !== undefined ? parseFloat(stock[itemName]) : 999;
+      if (ordered > avail) stockErrors.push(itemName + " — only " + avail + " remaining");
+    });
+    if (stockErrors.length > 0) {
+      return ContentService.createTextOutput(JSON.stringify({ status:"stockout", message:stockErrors.join(", ") })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Read items from ItemList
+    var itemListSheet = ss.getSheetByName(CONFIG.itemListSheet);
+    var allItems = [];
+    if (itemListSheet) {
+      var iData = itemListSheet.getRange(2,1,itemListSheet.getLastRow()-1,5).getValues();
+      iData.forEach(function(row) {
+        var n = row[0].toString().trim();
+        if (n && n.indexOf("▶") !== 0) allItems.push({ name:n, p250:parseFloat(row[1])||0, p500:parseFloat(row[2])||0, p1kg:parseFloat(row[3])||0, unit:row[4].toString().trim() });
+      });
+    }
+
+    // Build row
+    var row = [timestamp, orderId, customerName, phone, deliveryDate, deliveryAddress, landmark, "📥 Received"];
+    allItems.forEach(function(item) { row.push(itemsMap[item.name] || ""); });
+    row.push(grandTotal);
+    row.push(false);
+
+    // Set headers if first order
+    var lastCol   = ordersSheet.getLastColumn();
+    var headerRow = ordersSheet.getLastRow() < 1 ? [] : ordersSheet.getRange(1,1,1,Math.max(lastCol,1)).getValues()[0];
+    if (ordersSheet.getLastRow() === 0 || !headerRow[0]) {
+      var hdrs = ["Timestamp","Order ID","Customer Name","Phone","Delivery Date","Address","Landmark","Order Status"];
+      allItems.forEach(function(item) { hdrs.push(item.name); });
+      hdrs.push("Grand Total"); hdrs.push("Delivered");
+      ordersSheet.getRange(1,1,1,hdrs.length).setValues([hdrs]);
+      ordersSheet.getRange(1,1,1,hdrs.length).setBackground("#209d5c").setFontColor("#ffffff").setFontWeight("bold");
+    }
+
+    ordersSheet.appendRow(row);
+    var newRowNum = ordersSheet.getLastRow();
+    try { formatLastRow(ordersSheet, row.length); } catch(e) {}
+    try { ordersSheet.getRange(newRowNum, row.length).insertCheckboxes(); } catch(e) {}
+
+    // Deduct stock
+    deductStock(deliveryDate, itemsMap);
+
+    // Upsert customer record
+    upsertCustomer(phone, customerName, deliveryAddress, landmark, pin);
+
+    // WA Link
+    var orderedItems = [];
+    allItems.forEach(function(item) { if (itemsMap[item.name]) orderedItems.push({ item:item, qty:itemsMap[item.name] }); });
+    var waLink = buildWhatsAppLink(phone, customerName, deliveryDate, deliveryAddress, landmark, orderedItems);
+
+    var waColIdx = headerRow.indexOf("WA Link");
+    if (waColIdx === -1) {
+      waColIdx = row.length;
+      ordersSheet.getRange(1, waColIdx+1).setValue("WA Link").setBackground("#25D366").setFontColor("#ffffff").setFontWeight("bold");
+      ordersSheet.setColumnWidth(waColIdx+1, 200);
+    }
+    var waCell = ordersSheet.getRange(newRowNum, waColIdx+1);
+    waCell.clearDataValidations();
+    waCell.setValue(waLink).setFontColor("#1155CC");
+
+    Logger.log("Order | " + orderId + " | " + customerName + " | " + deliveryDate);
+    return ContentService.createTextOutput(JSON.stringify({ status:"success", orderId:orderId })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    Logger.log("doPost error: " + err.message);
+    return ContentService.createTextOutput(JSON.stringify({ status:"error", message:err.message })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+
+// ── UPDATED onOpen ────────────────────────────────────────
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("🌿 Kappiyam")
+    .addItem("Generate Harvest & Packing List", "generateHarvestAndPacking")
+    .addSeparator()
+    .addItem("Sync Form Availability", "syncForm")
+    .addItem("🌐 Sync Availability to Website", "syncAvailabilityToGitHub")
+    .addSeparator()
+    .addItem("📅 Setup Delivery Dates Sheet", "setupDeliveryDatesSheet")
+    .addItem("📦 Setup Stock Sheet", "setupStockSheet")
+    .addItem("➕ Add New Date to Stock", "addDateToStockSheet")
+    .addItem("👥 Setup Customers Sheet", "setupCustomersSheet")
+    .addSeparator()
+    .addItem("🚚 Generate Driver Delivery Sheet", "generateDriverSheetMenu")
+    .addSeparator()
+    .addSubMenu(SpreadsheetApp.getUi().createMenu("📲 Send Order Status Update")
+      .addItem("📥 Received",        "statusReceived")
+      .addItem("✅ Confirmed",        "statusConfirmed")
+      .addItem("🌱 Harvest Started",  "statusHarvest")
+      .addItem("📦 Packed & Ready",   "statusPacked")
+      .addItem("🚚 Out for Delivery", "statusOutForDelivery")
+      .addItem("✅ Delivered",        "statusDelivered"))
+    .addSeparator()
+    .addItem("Generate Invoice for Customer", "generateInvoice")
+    .addItem("Save Invoice as PDF", "saveInvoiceAsPDF")
+    .addToUi();
+}
