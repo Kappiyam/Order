@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kappiyam Organic Farm — Order Fresh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Pacifico&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══ TOKENS ══════════════════════════════════════════ */
+:root {
+  --pri:    #2E5E3E;
+  --pri-h:  #6A9C78;
+  --pri-d:  #1e4028;
+  --earthy: #8B5E3C;
+  --bg:     #F7F6F2;
+  --bg2:    #eeecea;
+  --card:   #FEFCF8;
+  --txt:    #1C2B1E;
+  --mut:    #7a8c7c;
+  --bdr:    rgba(46,94,62,.10);
+  --sh:     0 1px 4px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+  --sh2:    0 2px 8px rgba(0,0,0,.09), 0 8px 32px rgba(0,0,0,.10);
+  --r:      16px;
+  --r-sm:   10px;
+  --r-lg:   24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Open Sans',sans-serif;color:var(--txt);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:700;line-height:1.2}
+h1{font-size:clamp(2.2rem,4.5vw,3.6rem)}
+h2{font-size:clamp(1.7rem,3.5vw,2.6rem)}
+h3{font-size:clamp(1.15rem,2vw,1.45rem)}
+.hidden{display:none!important}
+.page{display:none!important;min-height:100vh}
+.page.active{display:block!important}
+.container{max-width:1160px;margin:0 auto;padding:0 24px}
+.section{padding:80px 0}
+.section-alt{background:var(--bg)}
+.txt-c{text-align:center}
+.section-label{display:inline-block;padding:6px 16px;border-radius:20px;font-size:11.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:rgba(46,94,62,.10);color:var(--pri);margin-bottom:14px;font-family:'Open Sans',sans-serif}
+.section-title{color:var(--txt);margin-bottom:10px}
+.section-sub{color:var(--mut);font-size:15.5px;line-height:1.7;max-width:600px;margin:0 auto}
+.pac{font-family:'Pacifico',cursive}
+
+/* ── Buttons ─────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 26px;border-radius:50px;font-family:'Open Sans',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;letter-spacing:.1px}
+.btn-g{background:var(--pri);color:#fff}
+.btn-g:hover{background:var(--pri-h);transform:translateY(-1px);box-shadow:0 4px 20px rgba(46,94,62,.30)}
+.btn-ol{background:transparent;color:var(--pri);border:2px solid var(--pri)}
+.btn-ol:hover{background:var(--pri);color:#fff}
+.btn-ol-w{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.55)}
+.btn-ol-w:hover{background:rgba(255,255,255,.15);border-color:#fff}
+.btn-full{width:100%;display:flex}
+.btn-sm{padding:9px 18px;font-size:13px}
+.btn-lg{padding:15px 30px;font-size:16px}
+
+/* ── Inputs ──────────────────────────── */
+.inp{width:100%;padding:12px 15px;border:1.5px solid var(--bg2);border-radius:var(--r);font-family:'Open Sans',sans-serif;font-size:14.5px;color:var(--txt);background:#fff;transition:border-color .2s;outline:none}
+.inp:focus{border-color:var(--pri)}
+.inp::placeholder{color:#b5c0b5}
+label.lbl{display:block;font-size:11.5px;font-weight:700;color:var(--mut);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.fg{margin-bottom:15px}
+.err-box{background:#fff0f0;border-left:3px solid #c62828;padding:10px 14px;border-radius:0 8px 8px 0;font-size:13px;color:#c62828;margin-bottom:14px}
+
+/* ── Toast ───────────────────────────── */
+.toast{position:fixed;top:90px;left:50%;transform:translateX(-50%) translateY(-10px);background:var(--pri);color:#fff;padding:11px 22px;border-radius:50px;font-size:13.5px;font-weight:600;z-index:600;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#c62828}
+
+/* ── Loading ─────────────────────────── */
+#ld{position:fixed;inset:0;background:rgba(247,246,242,.94);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.spin{width:36px;height:36px;border:3px solid rgba(46,94,62,.18);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#ld-txt{font-size:14px;color:var(--mut);font-weight:600}
+
+/* ══ SUBSCRIBE BANNER ════════════════════════════════ */
+.sub-topbar{background:linear-gradient(90deg,var(--pri-d) 0%,var(--pri) 50%,var(--pri-h) 100%);color:#fff;text-align:center;padding:10px 20px;font-size:13.5px;font-weight:600;position:relative;z-index:250;display:flex;align-items:center;justify-content:center;gap:12px}
+.sub-topbar a,.sub-topbar button.sub-link{color:#fff;background:none;border:none;font-family:'Open Sans',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;text-decoration:underline;padding:0}
+.sub-topbar .sub-close{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.75);font-size:18px;cursor:pointer;line-height:1;padding:4px}
+.sub-topbar .sub-close:hover{color:#fff}
+
+/* ══ NAVBAR ══════════════════════════════════════════ */
+.nav{position:sticky;top:0;left:0;right:0;z-index:200;background:rgba(247,246,242,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);transition:all .3s}
+.nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.08)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;max-width:1160px;margin:0 auto}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.nav-logo img{width:42px;height:42px;border-radius:50%;object-fit:cover}
+.nav-logo-txt .lt{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--pri);line-height:1.1}
+.nav-logo-txt .ls{font-size:10.5px;color:var(--mut);margin-top:1px;font-family:'Open Sans',sans-serif}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a,.nav-drop-btn{font-size:14px;font-weight:600;color:var(--txt);text-decoration:none;transition:color .2s;padding:7px 10px;border-radius:8px;cursor:pointer;border:none;background:none;font-family:'Open Sans',sans-serif}
+.nav-links a:hover,.nav-drop-btn:hover{color:var(--pri);background:rgba(46,94,62,.07)}
+.nav-drop{position:relative}
+.nav-drop-menu{display:none;position:absolute;top:100%;left:0;padding-top:4px;z-index:300;min-width:180px}
+.nav-drop-menu-inner{background:#fff;border-radius:14px;box-shadow:var(--sh2);padding:8px;border:1px solid var(--bdr)}
+.nav-drop-menu.open{display:block}
+.nav-drop-menu a{display:block;padding:9px 14px;font-size:13.5px;font-weight:600;color:var(--txt);text-decoration:none;border-radius:8px;transition:all .15s}
+.nav-drop-menu a:hover{background:rgba(46,94,62,.08);color:var(--pri)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-order-btn{background:var(--earthy);color:#fff;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;transition:all .2s;font-family:'Open Sans',sans-serif}
+.nav-order-btn:hover{background:#74502f;transform:translateY(-1px)}
+.nav-icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;position:relative}
+.nav-icon-btn:hover{background:rgba(46,94,62,.09)}
+.nav-icon-btn svg{width:22px;height:22px;stroke:var(--pri);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cart-badge{position:absolute;top:2px;right:2px;width:17px;height:17px;border-radius:50%;background:var(--earthy);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Open Sans',sans-serif}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px;background:none;border:none}
+.hamburger span{width:22px;height:2px;background:var(--pri);border-radius:2px;transition:all .3s}
+
+/* Mobile menu */
+.mob-menu{display:none;position:fixed;inset:0;background:rgba(247,246,242,.99);z-index:300;padding:80px 28px 40px;flex-direction:column;overflow-y:auto}
+.mob-menu.open{display:flex}
+.mob-menu a,.mob-menu button.mob-link{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--pri);text-decoration:none;padding:14px 0;border-bottom:1px solid var(--bg2);display:block;background:none;border-top:none;border-left:none;border-right:none;text-align:left;cursor:pointer;width:100%;line-height:1.2}
+.mob-close{position:absolute;top:20px;right:24px;background:none;border:none;font-size:28px;cursor:pointer;color:var(--mut);z-index:301}
+
+/* WhatsApp FAB */
+.wa-fab{position:fixed;bottom:90px;right:18px;z-index:280;width:52px;height:52px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);text-decoration:none;font-size:26px;transition:transform .2s;animation:waPulse 3s ease-in-out infinite}
+.wa-fab:hover{transform:scale(1.1)}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.4)}50%{box-shadow:0 6px 32px rgba(37,211,102,.65)}}
+
+/* ══ HERO ════════════════════════════════════════════ */
+#pg-home{padding-top:0}
+.hero{min-height:92vh;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;background:linear-gradient(135deg,#0c2618 0%,var(--pri-d) 40%,var(--pri) 100%);overflow:hidden;position:relative}
+.hero-left{padding:60px 40px 60px 52px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:50px;padding:7px 16px;font-size:12.5px;color:rgba(255,255,255,.92);margin-bottom:22px;font-family:'Pacifico',cursive}
+.hero-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:#4ade80;flex-shrink:0}
+.hero-left h1{color:#fff;margin-bottom:14px;line-height:1.18}
+.hero-left h1 em{color:#a3d9a5;font-style:normal}
+.hero-sub{color:rgba(255,255,255,.78);font-size:16.5px;line-height:1.72;max-width:440px;margin-bottom:32px}
+.hero-btns{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:38px}
+.hero-checks{display:flex;flex-wrap:wrap;gap:18px}
+.hero-check{color:rgba(255,255,255,.78);font-size:13px;display:flex;align-items:center;gap:7px}
+.hero-check::before{content:'✓';color:#a3d9a5;font-weight:700;font-size:14px}
+
+.hero-right{height:100%;position:relative;overflow:hidden;min-height:480px}
+.hero-img-cell{overflow:hidden;position:relative}
+.hero-img-cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 6s ease}
+.hero-img-cell:hover img{transform:scale(1.04)}
+.hero-img-cell:nth-child(1){border-radius:20px 4px 4px 4px}
+.hero-img-cell:nth-child(2){border-radius:4px 20px 4px 4px}
+.hero-img-cell:nth-child(3){border-radius:4px 4px 4px 20px}
+.hero-img-cell:nth-child(4){border-radius:4px 4px 20px 4px}
+.hero-overlay-txt{position:absolute;bottom:12px;left:12px;background:rgba(12,38,24,.72);color:#fff;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;backdrop-filter:blur(6px)}
+
+/* ══ OFFERINGS ═══════════════════════════════════════ */
+.offer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px}
+.offer-card{background:var(--card);border-radius:var(--r-lg);padding:30px 26px;box-shadow:var(--sh);border:1px solid var(--bdr);transition:all .25s}
+.offer-card:hover{transform:translateY(-4px);box-shadow:var(--sh2)}
+.oc-icon{font-size:40px;margin-bottom:18px}
+.oc-title{font-size:1.3rem;margin-bottom:9px;color:var(--pri)}
+.oc-desc{font-size:14px;color:var(--mut);line-height:1.65;margin-bottom:16px}
+.oc-bullets{list-style:none;display:flex;flex-direction:column;gap:6px}
+.oc-bullets li{font-size:13px;color:var(--mut);display:flex;align-items:flex-start;gap:8px}
+.oc-bullets li::before{content:'•';color:var(--pri);font-weight:700;font-size:16px;line-height:1.2;flex-shrink:0}
+
+/* ══ OUR STORY (merged) ══════════════════════════════ */
+.story-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.story-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.story-card{background:var(--card);border-radius:var(--r);padding:22px 20px;box-shadow:var(--sh);border:1px solid var(--bdr)}
+.sc-icon{font-size:28px;margin-bottom:12px}
+.sc-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--pri);margin-bottom:6px}
+.sc-desc{font-size:13px;color:var(--mut);line-height:1.6}
+.story-text h2{margin-bottom:14px}
+.story-text p{font-size:15px;color:var(--mut);line-height:1.75;margin-bottom:14px}
+.story-points{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.story-point{display:flex;align-items:flex-start;gap:12px;font-size:13.5px;color:var(--mut);line-height:1.55}
+.story-point::before{content:'✓';width:22px;height:22px;border-radius:50%;background:rgba(46,94,62,.12);color:var(--pri);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* ══ FARM EXPERIENCE ═════════════════════════════════ */
+.fv-section{background:var(--pri-d);padding:80px 0}
+.fv-section .section-label{background:rgba(255,255,255,.15);color:#fff}
+.fv-section .section-title{color:#fff}
+.fv-section .section-sub{color:rgba(255,255,255,.7)}
+.fv-slider-wrap{position:relative;overflow:hidden;margin-top:48px}
+.fv-slider{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.fv-card{min-width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:var(--r-lg);padding:36px 40px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;backdrop-filter:blur(8px)}
+.fv-card-left .fv-icon{font-size:52px;margin-bottom:18px}
+.fv-card-left h3{font-family:'Playfair Display',serif;font-size:1.7rem;color:#fff;margin-bottom:12px}
+.fv-card-left p{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:20px}
+.fv-card-left .btn{margin-top:4px}
+.fv-bullets{list-style:none;display:flex;flex-direction:column;gap:12px}
+.fv-bullets li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:rgba(255,255,255,.8);line-height:1.5}
+.fv-bullets li::before{content:'🌿';flex-shrink:0;font-size:16px}
+.fv-badge{display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:20px;letter-spacing:.5px;text-transform:uppercase}
+.fv-nav{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:28px}
+.fv-arr{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.fv-arr:hover{background:rgba(255,255,255,.22)}
+.fv-dots{display:flex;gap:8px}
+.fv-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .2s}
+.fv-dot.on{background:#fff;width:22px;border-radius:4px}
+
+/* Farm booking modal */
+.fv-modal-overlay{position:fixed;inset:0;background:rgba(12,38,24,.75);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.fv-modal{background:#fff;border-radius:var(--r-lg);padding:32px;max-width:460px;width:100%;box-shadow:var(--sh2);max-height:90vh;overflow-y:auto}
+.fv-modal-head{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.fv-modal-icon{font-size:30px}
+.fv-modal-title{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:var(--pri)}
+.slot-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.slot-pill{padding:8px 16px;border-radius:50px;border:1.5px solid var(--bg2);font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:var(--txt);font-family:'Open Sans',sans-serif;transition:all .2s}
+.slot-pill.sel{background:var(--pri);color:#fff;border-color:var(--pri)}
+
+/* ══ TESTIMONIALS ════════════════════════════════════ */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.testi-card{background:var(--card);border-radius:var(--r-lg);padding:28px;box-shadow:var(--sh);border:1px solid var(--bdr)}
+.tc-stars{color:#f59e0b;font-size:15px;margin-bottom:12px}
+.tc-text{font-style:italic;font-size:14px;line-height:1.75;color:var(--txt);margin-bottom:18px}
+.tc-name{font-weight:700;font-size:14px;color:var(--pri)}
+.tc-role{font-size:12px;color:var(--mut)}
+
+/* ══ FOOTER ══════════════════════════════════════════ */
+.footer{background:var(--txt);color:rgba(255,255,255,.65);padding:52px 24px 28px}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;max-width:1160px;margin:0 auto 40px}
+.footer-brand .fb-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px}
+.footer-brand p{font-size:13.5px;line-height:1.7;max-width:260px}
+.footer h4{color:#fff;font-family:'Open Sans',sans-serif;font-size:12px;font-weight:700;margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px}
+.footer ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.footer ul li a,.footer ul li button.ft-link{color:rgba(255,255,255,.6);text-decoration:none;font-size:13.5px;transition:color .2s;background:none;border:none;cursor:pointer;font-family:'Open Sans',sans-serif;padding:0;text-align:left}
+.footer ul li a:hover,.footer ul li button.ft-link:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;display:flex;justify-content:space-between;align-items:center;max-width:1160px;margin:0 auto;font-size:12px;flex-wrap:wrap;gap:8px}
+
+/* ══ AUTH PAGE ═══════════════════════════════════════ */
+#pg-auth{padding-top:72px;background:var(--bg);min-height:100vh;align-items:flex-start;justify-content:center;padding-bottom:60px}
+#pg-auth.active{display:flex!important}
+.auth-wrap{width:100%;max-width:440px;padding:32px 20px 0}
+.auth-card{background:var(--card);border-radius:var(--r-lg);padding:32px;box-shadow:var(--sh2)}
+.auth-card h2{text-align:center;margin-bottom:4px;font-size:1.6rem}
+.auth-sub{text-align:center;color:var(--mut);font-size:14px;margin-bottom:22px}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.type-card{border:2px solid var(--bg2);border-radius:var(--r);padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.type-card:hover{border-color:var(--pri);background:var(--bg)}
+.type-card.sel{border-color:var(--pri);background:rgba(46,94,62,.07)}
+.type-card.sel::after{content:'✓';position:absolute;top:8px;right:10px;font-size:11px;font-weight:700;color:var(--pri)}
+.type-icon{font-size:30px;margin-bottom:8px}
+.type-lbl{font-weight:700;font-size:14px;margin-bottom:2px}
+.type-sub{font-size:11px;color:var(--mut);line-height:1.35}
+.auth-tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:18px}
+.auth-tab{flex:1;padding:10px;border-radius:10px;border:none;background:transparent;font-family:'Open Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;color:var(--mut)}
+.auth-tab.on{background:#fff;color:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.gps-btn{width:100%;padding:11px;border:1.5px dashed var(--bg2);border-radius:var(--r);font-family:'Open Sans',sans-serif;font-size:13.5px;color:var(--mut);background:transparent;cursor:pointer;transition:all .2s;margin-bottom:14px}
+.gps-btn:hover{border-color:var(--pri);color:var(--pri)}
+
+/* ══ SHOP PAGE ═══════════════════════════════════════ */
+#pg-shop{padding-top:72px;background:var(--bg);min-height:100vh}
+.shop-topbar{background:#fff;border-bottom:1px solid var(--bg2);position:sticky;top:72px;z-index:100;padding:12px 24px}
+.shop-topbar-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.shop-greet{font-size:14px;color:var(--mut)}
+.shop-greet strong{color:var(--pri)}
+.del-prog{flex:1;min-width:180px;max-width:340px}
+.del-prog-top{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:5px}
+.del-prog-top .amt{color:var(--pri);font-weight:700}
+.prog-track{height:5px;background:var(--bg2);border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;background:var(--pri);border-radius:10px;transition:width .4s}
+.cat-strip{background:#fff;border-bottom:1px solid var(--bg2);padding:0 24px}
+.cat-strip-inner{max-width:1160px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 16px 10px 0;-webkit-overflow-scrolling:touch}
+.cat-strip-inner::-webkit-scrollbar{display:none}
+.cat-btn{flex-shrink:0;padding:7px 16px;border-radius:20px;border:1.5px solid var(--bg2);font-size:13px;font-weight:600;cursor:pointer;background:#fff;transition:all .2s;color:var(--mut);font-family:'Open Sans',sans-serif}
+.cat-btn.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.items-section{max-width:1160px;margin:0 auto;padding:22px 24px 160px}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:16px}
+.item-card{background:var(--card);border-radius:var(--r);overflow:hidden;border:1.5px solid var(--bg2);transition:all .2s;position:relative}
+.item-card:hover{border-color:var(--pri-h);box-shadow:var(--sh2)}
+.item-card.oos{opacity:.5;pointer-events:none}
+.item-img{aspect-ratio:1;background:rgba(46,94,62,.07);display:flex;align-items:center;justify-content:center;font-size:44px;overflow:hidden}
+.item-img img{width:100%;height:100%;object-fit:cover}
+.item-seasonal{position:absolute;top:8px;left:8px;background:var(--earthy);color:#fff;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px}
+.item-body{padding:11px}
+.item-name{font-size:13px;font-weight:700;line-height:1.3;margin-bottom:1px;color:var(--txt)}
+.item-tamil{font-size:11px;color:var(--mut);margin-bottom:6px}
+.item-price{font-size:14.5px;font-weight:700;color:var(--pri);margin-bottom:7px}
+.item-stk{font-size:10.5px;color:var(--mut)}
+.item-oos-txt{font-size:12px;color:#c62828;font-weight:600}
+
+/* Variant chips */
+.var-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.var-chip{padding:3px 9px;border-radius:12px;border:1.5px solid var(--bg2);font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--mut);font-family:'Open Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.var-chip.sel{background:var(--pri);color:#fff;border-color:var(--pri)}
+
+/* Qty controls */
+.qty-ctrl{display:flex;align-items:center;gap:8px}
+.qb{width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:transform .12s;flex-shrink:0}
+.qb:hover{transform:scale(1.1)}
+.qb-m{background:rgba(46,94,62,.1);color:var(--pri)}
+.qb-p{background:var(--pri);color:#fff}
+.qn{font-size:15px;font-weight:700;color:var(--pri);min-width:26px;text-align:center}
+
+/* Cart bar */
+.cart-bar{position:fixed;bottom:64px;left:0;right:0;z-index:150;background:var(--pri);color:#fff;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;transform:translateY(calc(100% + 64px));transition:transform .3s cubic-bezier(.4,0,.2,1);border-radius:16px 16px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.18)}
+.cart-bar.up{transform:translateY(0)}
+.cb-cnt{font-size:12px;opacity:.75}
+.cb-tot{font-size:18px;font-weight:700}
+.cb-right{display:flex;gap:8px}
+
+/* ══ CHECKOUT PAGE ═══════════════════════════════════ */
+#pg-co,#pg-pay,#pg-conf,#pg-track,#pg-prof,#pg-d2b,#pg-sub{padding-top:72px;background:var(--bg);min-height:100vh}
+.page-hdr{background:#fff;border-bottom:1px solid var(--bg2);padding:14px 20px;position:sticky;top:72px;z-index:100;display:flex;align-items:center;gap:12px}
+.page-hdr-back{background:none;border:none;font-size:22px;cursor:pointer;color:var(--mut);padding:2px 8px 2px 0;line-height:1}
+.page-hdr h3{font-size:1.1rem;color:var(--pri)}
+.co-body,.pay-body,.track-body,.prof-body,.d2b-body{max-width:600px;margin:0 auto;padding:20px 20px 120px}
+.co-section{background:#fff;border-radius:var(--r);padding:20px;margin-bottom:14px;box-shadow:var(--sh);border:1px solid var(--bg2)}
+.co-section h4{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--pri);margin-bottom:14px}
+.co-item-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bg2)}
+.co-item-row:last-child{border-bottom:none}
+.co-item-emo{font-size:22px}
+.co-item-name{flex:1;font-size:13.5px;font-weight:600}
+.co-item-qty{font-size:12px;color:var(--mut)}
+.co-item-price{font-size:14px;font-weight:700;color:var(--pri)}
+.co-item-del{background:none;border:none;color:#c62828;font-size:16px;cursor:pointer;padding:2px 6px}
+.date-pills{display:flex;flex-wrap:wrap;gap:8px}
+.date-pill{padding:9px 16px;border-radius:50px;border:1.5px solid var(--bg2);font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:var(--txt);font-family:'Open Sans',sans-serif;transition:all .2s;text-align:center}
+.date-pill.sel{background:var(--pri);color:#fff;border-color:var(--pri)}
+.slot-btns{display:flex;gap:10px}
+.slot-btn{flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--bg2);background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Open Sans',sans-serif;transition:all .2s;color:var(--txt)}
+.slot-btn.sel{background:var(--pri);color:#fff;border-color:var(--pri)}
+.co-total-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px}
+.co-total-row.grand{font-size:16px;font-weight:700;color:var(--pri);border-top:1px solid var(--bg2);padding-top:12px;margin-top:4px}
+
+/* ══ PAYMENT PAGE ════════════════════════════════════ */
+.upi-card{background:linear-gradient(135deg,var(--pri-d),var(--pri));border-radius:var(--r-lg);padding:24px;color:#fff;text-align:center;margin-bottom:16px}
+.upi-card h3{color:#fff;font-size:1.1rem;margin-bottom:4px}
+.upi-id{font-size:1.45rem;font-weight:700;letter-spacing:.5px;margin:14px 0;font-family:'Open Sans',sans-serif;background:rgba(255,255,255,.12);padding:12px 20px;border-radius:12px;display:inline-block}
+.upi-sub{font-size:12.5px;opacity:.75}
+.bank-card{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh);border:1px solid var(--bg2);margin-bottom:14px;font-size:13px;line-height:1.8;color:var(--mut)}
+.bank-card strong{color:var(--txt)}
+
+/* ══ CONFIRMATION PAGE ═══════════════════════════════ */
+#pg-conf.active{display:flex!important;flex-direction:column;align-items:center;justify-content:center;padding:100px 20px 60px}
+.conf-icon{font-size:64px;margin-bottom:16px;animation:pop .4s ease}
+@keyframes pop{0%{transform:scale(.5)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.conf-card{background:var(--card);border-radius:var(--r-lg);padding:28px 24px;text-align:center;box-shadow:var(--sh2);max-width:400px;width:100%}
+.conf-card h2{color:var(--pri);margin-bottom:8px;font-size:1.7rem}
+.conf-oid{font-size:13px;color:var(--mut);margin-bottom:20px}
+.conf-oid span{font-weight:700;color:var(--pri)}
+.conf-btns{display:flex;flex-direction:column;gap:10px}
+
+/* ══ TRACK PAGE ══════════════════════════════════════ */
+.track-tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:20px}
+.track-tab{flex:1;padding:10px;border-radius:10px;border:none;background:transparent;font-family:'Open Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;color:var(--mut)}
+.track-tab.on{background:#fff;color:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.track-result{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh);border:1px solid var(--bg2);margin-top:16px}
+.track-steps{display:flex;justify-content:space-between;position:relative;margin:20px 0}
+.track-steps::before{content:'';position:absolute;top:18px;left:10%;right:10%;height:2px;background:var(--bg2);z-index:0}
+.track-step{text-align:center;position:relative;z-index:1;flex:1}
+.ts-dot{width:36px;height:36px;border-radius:50%;background:var(--bg2);border:2px solid var(--bg2);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:14px;transition:all .3s}
+.ts-lbl{font-size:11px;font-weight:600;color:var(--mut)}
+.track-step.done .ts-dot{background:var(--pri);border-color:var(--pri);color:#fff}
+.track-step.done .ts-lbl{color:var(--pri)}
+.track-step.active .ts-dot{background:var(--pri);border-color:var(--pri);box-shadow:0 0 0 4px rgba(46,94,62,.18)}
+.track-step.active .ts-lbl{color:var(--pri);font-weight:700}
+
+/* ══ PROFILE PAGE ════════════════════════════════════ */
+.prof-card{background:var(--card);border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh);border:1px solid var(--bg2);margin-bottom:14px}
+.prof-avatar{width:64px;height:64px;border-radius:50%;background:rgba(46,94,62,.1);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:14px}
+.prof-name{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--pri)}
+.prof-phone{font-size:14px;color:var(--mut);margin-top:2px}
+.prof-type-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:700;margin-top:8px}
+.prof-actions{display:flex;flex-direction:column;gap:10px}
+
+/* ══ D2B PAGE ════════════════════════════════════════ */
+.d2b-topbar{background:linear-gradient(135deg,#0c2618,var(--pri));color:#fff;padding:28px 24px}
+.d2b-topbar h2{font-family:'Playfair Display',serif;font-size:1.7rem;color:#fff;margin-bottom:4px}
+.d2b-topbar p{opacity:.75;font-size:14px}
+.d2b-body{max-width:700px;margin:0 auto;padding:20px 20px 120px}
+.d2b-note{background:#fff8e1;border-left:4px solid #f59e0b;padding:12px 16px;border-radius:0 12px 12px 0;margin-bottom:20px;font-size:13px;line-height:1.6;color:var(--txt)}
+.d2b-item-row{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--bg2);gap:12px}
+.d2b-inp{width:80px;padding:9px;border:1.5px solid var(--bg2);border-radius:10px;text-align:center;font-size:14px;font-family:'Open Sans',sans-serif;outline:none}
+.d2b-inp:focus{border-color:var(--pri)}
+
+/* ══ SUBSCRIPTION PAGE ═══════════════════════════════ */
+.sub-pg-wrap{max-width:780px;margin:0 auto;padding:32px 20px 120px}
+.sub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:32px 0}
+.sub-card{background:var(--card);border-radius:var(--r-lg);padding:24px 20px;border:2px solid var(--bg2);box-shadow:var(--sh);transition:all .2s;position:relative;cursor:pointer}
+.sub-card:hover{border-color:var(--pri-h);transform:translateY(-3px)}
+.sub-card.sel{border-color:var(--pri);box-shadow:0 0 0 3px rgba(46,94,62,.12),var(--sh2)}
+.sub-card.popular{border-color:var(--pri)}
+.sub-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--pri);color:#fff;font-size:10.5px;font-weight:700;padding:3px 12px;border-radius:20px;white-space:nowrap;letter-spacing:.4px}
+.sub-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--pri);margin-bottom:4px;margin-top:6px}
+.sub-tag{font-size:11.5px;color:var(--mut);margin-bottom:12px}
+.sub-price{font-size:1.5rem;font-weight:700;color:var(--pri);margin-bottom:14px}
+.sub-price span{font-size:13px;font-weight:400;color:var(--mut)}
+.sub-features{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.sub-features li{font-size:12.5px;color:var(--mut);display:flex;align-items:flex-start;gap:7px;line-height:1.5}
+.sub-features li::before{content:'✓';color:var(--pri);font-weight:700;flex-shrink:0;font-size:13px}
+.sub-form-card{background:var(--card);border-radius:var(--r-lg);padding:28px;box-shadow:var(--sh);border:1px solid var(--bg2);margin-top:16px}
+.sub-form-card h3{font-size:1.2rem;color:var(--pri);margin-bottom:18px}
+
+/* ══ BOTTOM TAB BAR ══════════════════════════════════ */
+.btab{display:none;position:fixed;bottom:0;left:0;right:0;z-index:180;background:#fff;border-top:1px solid var(--bg2);box-shadow:0 -2px 16px rgba(0,0,0,.07)}
+.btab-inner{display:flex;max-width:500px;margin:0 auto}
+.btab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 11px;background:none;border:none;cursor:pointer;font-family:'Open Sans',sans-serif;font-size:10px;font-weight:600;color:var(--mut);transition:color .2s;position:relative}
+.btab-btn.on{color:var(--pri)}
+.btab-icon{font-size:22px;line-height:1}
+.btab-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btab-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--earthy);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* ══ RESPONSIVE ══════════════════════════════════════ */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero-right{height:260px;min-height:260px}
+  .hero-left{padding:40px 22px 28px}
+  .offer-grid{grid-template-columns:1fr}
+  .story-wrap{grid-template-columns:1fr}
+  .story-cards{grid-template-columns:1fr 1fr}
+  .testi-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .sub-grid{grid-template-columns:1fr}
+  .fv-card{grid-template-columns:1fr;gap:20px;padding:24px}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .btab{display:block}
+  .wa-fab{bottom:76px}
+  .cart-bar{bottom:64px}
+}
+@media(max-width:600px){
+  .hero-right{height:200px}
+  .story-cards{grid-template-columns:1fr}
+  .hero-btns .btn-lg{font-size:14px;padding:13px 20px}
+}
+</style>
+
+<!-- ══ SUBSCRIBE BANNER ══════════════════════════════ -->
+<div class="sub-topbar" id="sub-topbar">
+  <span>🌿 Interested in Weekly Fresh Box Subscriptions &mdash;</span>
+  <button class="sub-link" onclick="showPage('pg-sub')">Subscribe Now &rarr;</button>
+  <button class="sub-close" onclick="document.getElementById('sub-topbar').style.display='none'" title="Dismiss">&times;</button>
+</div>
+
+<!-- ══ NAVBAR ════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goHome();return false" href="#">
+      <img id="nav-logo-img" src="" alt="Kappiyam Logo">
+      <div class="nav-logo-txt">
+        <div class="lt">Kappiyam Organic Farm</div>
+        <div class="ls">Your Family Farmer</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <div class="nav-drop">
+        <button class="nav-drop-btn">About ▾</button>
+        <div class="nav-drop-menu" id="drop-about"><div class="nav-drop-menu-inner">
+          <a onclick="goHome();setTimeout(function(){document.getElementById('about').scrollIntoView({behavior:'smooth'})},300);return false" href="#">Our Story</a>
+          <a onclick="goHome();setTimeout(function(){document.getElementById('farmvisit').scrollIntoView({behavior:'smooth'})},300);return false" href="#">Farm Experience</a>
+        </div>
+      </div>
+      <div class="nav-drop">
+        <button class="nav-drop-btn">Shop ▾</button>
+        <div class="nav-drop-menu">
+          <a onclick="startShop();return false" href="#">Fresh Produce</a>
+          <a onclick="startD2B();return false" href="#">Wholesale / D2B</a>
+        </div>
+      </div>
+      <div class="nav-drop">
+        <button class="nav-drop-btn">Farm Life ▾</button>
+        <div class="nav-drop-menu">
+          <a onclick="goHome();setTimeout(function(){document.getElementById('farmvisit').scrollIntoView({behavior:'smooth'})},300);return false" href="#">Farm Visit</a>
+          <a onclick="goHome();setTimeout(function(){document.getElementById('farmvisit').scrollIntoView({behavior:'smooth'})},300);return false" href="#">Self Harvest</a>
+          <a onclick="goHome();setTimeout(function(){document.getElementById('farmvisit').scrollIntoView({behavior:'smooth'})},300);return false" href="#">Feel the Soil</a>
+        </div>
+      </div>
+      <div class="nav-drop">
+        <button class="nav-drop-btn">Customer ▾</button>
+        <div class="nav-drop-menu">
+          <a onclick="showPage('pg-prof');return false" href="#">My Profile</a>
+          <a onclick="showPage('pg-track');return false" href="#">Track Order</a>
+          <a onclick="startD2B();return false" href="#">Wholesale / D2B &rarr;</a>
+        </div>
+      </div>
+      <a onclick="showPage('pg-sub');return false" href="#">Subscribe</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-icon-btn" onclick="startShop()" title="Shop" id="nav-cart-btn">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-badge hidden" id="nav-cart-count">0</span>
+      </button>
+      <button class="nav-icon-btn" onclick="showPage('pg-prof')" title="Profile">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="nav-order-btn" onclick="startShop()">Order Now</button>
+      <button class="hamburger" onclick="toggleMob()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MOBILE MENU ════════════════════════════════════ -->
+<div class="mob-menu" id="mob-menu">
+  <button class="mob-close" onclick="closeMob()">&times;</button>
+  <a onclick="closeMob();goHome();return false" href="#">Home</a>
+  <button class="mob-link" onclick="closeMob();startShop()">Shop Fresh Produce</button>
+  <button class="mob-link" onclick="closeMob();goHome();setTimeout(function(){document.getElementById('farmvisit').scrollIntoView({behavior:'smooth'})},300)">Farm Experience</button>
+  <button class="mob-link" onclick="closeMob();showPage('pg-sub')">Subscribe</button>
+  <button class="mob-link" onclick="closeMob();startD2B()">Wholesale / D2B</button>
+  <button class="mob-link" onclick="closeMob();showPage('pg-prof')">My Account</button>
+  <button class="mob-link" onclick="closeMob();showPage('pg-track')">Track Order</button>
+</div>
+
+<!-- ══ WA FLOAT ═══════════════════════════════════════ -->
+<a class="wa-fab" href="https://wa.me/919003889666" target="_blank" title="Chat on WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#fff" d="M16 3C9.373 3 4 8.373 4 15c0 2.385.663 4.61 1.816 6.51L4 29l7.695-1.793A11.94 11.94 0 0016 27c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10a9.94 9.94 0 01-5.03-1.357l-.36-.213-4.57 1.064 1.097-4.46-.235-.374A9.94 9.94 0 016 15c0-5.523 4.477-10 10-10zm-3.3 5.5c-.22 0-.578.082-.882.408-.303.326-1.157 1.13-1.157 2.756 0 1.625 1.184 3.196 1.348 3.416.165.22 2.313 3.73 5.72 5.086 2.83 1.117 3.407.895 4.022.839.615-.056 1.984-.811 2.263-1.594.278-.782.278-1.453.194-1.594-.083-.14-.303-.22-.634-.386-.33-.165-1.956-.965-2.26-1.074-.303-.11-.524-.165-.744.165-.22.33-.854 1.073-1.047 1.294-.193.22-.386.248-.716.083-.33-.165-1.393-.514-2.654-1.637-.981-.874-1.644-1.954-1.836-2.284-.193-.33-.02-.508.144-.672.149-.148.33-.386.496-.579.165-.193.22-.33.33-.55.11-.22.055-.413-.028-.579-.082-.165-.737-1.8-1.02-2.46-.268-.64-.544-.544-.744-.554l-.634-.011z"/>
+  </svg>
+</a>
+
+<!-- ══ TOAST ══════════════════════════════════════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ LOADING ════════════════════════════════════════ -->
+<div class="hidden" id="ld">
+  <div class="spin"></div>
+  <div id="ld-txt">Loading…</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="pac">✦ Your Family Farmer ✦</span>
+      </div>
+      <h1>Eat Clean.<br>Live Well.<br><em>Farm Fresh</em> Every Day.</h1>
+      <p class="hero-sub">Vegetables harvested the same morning they reach your table. No chemicals. No cold storage. No compromise on your family's health.</p>
+      <div class="hero-btns">
+        <button class="btn btn-g btn-lg" onclick="startShop()">🛒 Shop Fresh Produce</button>
+        <button class="btn btn-ol-w" onclick="document.getElementById('farmvisit').scrollIntoView({behavior:'smooth'})">🌾 Book Farm Visit</button>
+        <button class="btn btn-ol-w btn-sm" onclick="showPage('pg-sub')">📦 Subscribe</button>
+      </div>
+      <div class="hero-checks">
+        <span class="hero-check">Same-day harvest</span>
+        <span class="hero-check">Zero chemicals</span>
+        <span class="hero-check">Traceable source</span>
+        <span class="hero-check">Coimbatore grown</span>
+      </div>
+    </div>
+    <div class="hero-right" style="position:relative;overflow:hidden;height:100%;min-height:400px">
+      <div id="hero-slides" style="display:flex;height:100%;transition:transform .7s cubic-bezier(.4,0,.2,1)">
+        <div style="min-width:100%;height:100%;position:relative;flex-shrink:0;background:linear-gradient(135deg,#1a3a24,#2e5e3e)">
+          <img src="https://picsum.photos/seed/farmfield/800/600" alt="Fresh produce" style="width:100%;height:100%;object-fit:cover;display:block;opacity:.92" loading="eager" onerror="this.style.display='none'">
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:24px 20px 20px;background:linear-gradient(transparent,rgba(12,38,24,.85))">
+            <div style="color:#a3d9a5;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Fresh Produce</div>
+            <div style="color:#fff;font-size:15px;font-weight:600">Same-Day Harvest · Zero Chemicals</div>
+          </div>
+        </div></div>
+        <div style="min-width:100%;height:100%;position:relative;flex-shrink:0;background:linear-gradient(135deg,#1a3a24,#2e5e3e)">
+          <img src="https://picsum.photos/seed/farmsoil/800/600" alt="Our story" style="width:100%;height:100%;object-fit:cover;display:block;opacity:.92" loading="eager" onerror="this.style.display='none'">
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:24px 20px 20px;background:linear-gradient(transparent,rgba(12,38,24,.85))">
+            <div style="color:#a3d9a5;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Our Story</div>
+            <div style="color:#fff;font-size:15px;font-weight:600">100 Trusted Families · Madampatti Farm</div>
+          </div>
+        </div>
+        <div style="min-width:100%;height:100%;position:relative;flex-shrink:0;background:linear-gradient(135deg,#1a3a24,#2e5e3e)">
+          <img src="https://picsum.photos/seed/farmvisit/800/600" alt="Farm life" style="width:100%;height:100%;object-fit:cover;display:block;opacity:.92" loading="eager" onerror="this.style.display='none'">
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:24px 20px 20px;background:linear-gradient(transparent,rgba(12,38,24,.85))">
+            <div style="color:#a3d9a5;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Farm Life</div>
+            <div style="color:#fff;font-size:15px;font-weight:600">Visit · Self-Harvest · Feel the Soil</div>
+          </div>
+        </div>
+        <div style="min-width:100%;height:100%;position:relative;flex-shrink:0;background:linear-gradient(135deg,#1a3a24,#2e5e3e)">
+          <img src="https://picsum.photos/seed/farmfamily/800/600" alt="Our families" style="width:100%;height:100%;object-fit:cover;display:block;opacity:.92" loading="eager" onerror="this.style.display='none'">
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:24px 20px 20px;background:linear-gradient(transparent,rgba(12,38,24,.85))">
+            <div style="color:#a3d9a5;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">What Families Say</div>
+            <div style="color:#fff;font-size:15px;font-weight:600">Trusted by Coimbatore Families</div>
+          </div>
+        </div>
+      </div>
+      <div id="hero-dots" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:3"></div>
+    </div>
+  </section>
+
+  <!-- OFFERINGS -->
+  <section class="section" style="background:#fff" id="offerings">
+    <div class="container txt-c">
+      <div class="section-label">What We Offer</div>
+      <h2 class="section-title">Three Ways to Connect with Your Farm</h2>
+      <p class="section-sub">Fresh weekly produce, hands-on farm experiences, and organic farming training — Kappiyam offers more than just food.</p>
+      <div class="offer-grid">
+        <div class="offer-card">
+          <div class="oc-icon">🥦</div>
+          <div class="oc-title">Fresh Produce</div>
+          <p class="oc-desc">Order same-day harvested vegetables and greens. Delivered fresh to your doorstep in Coimbatore.</p>
+          <ul class="oc-bullets">
+            <li>Vegetables, greens & fruits</li>
+            <li>Same morning harvest</li>
+            <li>Weekly subscription available</li>
+            <li>Free delivery above ₹500</li>
+          </ul>
+        </div>
+        <div class="offer-card">
+          <div class="oc-icon">🌾</div>
+          <div class="oc-title">Farm Experience</div>
+          <p class="oc-desc">Visit the farm, harvest your own food, or volunteer for a morning. A living classroom for your family.</p>
+          <ul class="oc-bullets">
+            <li>Guided farm tours</li>
+            <li>Self-harvest sessions</li>
+            <li>Farm volunteering</li>
+            <li>Weekends & holidays</li>
+          </ul>
+        </div>
+        <div class="offer-card">
+          <div class="oc-icon">🌱</div>
+          <div class="oc-title">Organic Farming Training</div>
+          <p class="oc-desc">Learn natural farming methods hands-on at the farm. Practical sessions on soil, composting, and growing your own food.</p>
+          <ul class="oc-bullets">
+            <li>Natural pest &amp; soil management</li>
+            <li>Seasonal crop planning</li>
+            <li>Hands-on weekend sessions</li>
+            <li>Certificate on completion</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR STORY (merged with Why Kappiyam) -->
+  <section class="section section-alt" id="about">
+    <div class="container">
+      <div class="story-wrap">
+        <div>
+          <div class="section-label">Our Story</div>
+          <h2 class="section-title">A Farmer Who Thinks Like Your Family Doctor</h2>
+          <p class="story-text" style="color:var(--mut);font-size:15px;line-height:1.75;margin-bottom:14px">Kappiyam Organic Farm was born from a simple belief — the food your family eats should come from someone who cares about their health, not just the harvest. We grow without chemicals, without shortcuts, and without compromise.</p>
+          <p style="color:var(--mut);font-size:15px;line-height:1.75;margin-bottom:20px">Located in Madampatti, Coimbatore, we currently serve <strong style="color:var(--pri)">100 trusted families</strong> who receive same-day harvested produce every week — fresh from our soil to your kitchen. We keep our circle intentionally small. <strong style="color:var(--pri)">Limited slots available</strong> — we grow only as much as we can genuinely care for.</p>
+          <div class="story-points">
+            <div class="story-point">No pesticides, no chemical fertilisers — ever</div>
+            <div class="story-point">Every item harvested the same morning it's delivered</div>
+            <div class="story-point">You know exactly which farm your food came from</div>
+            <div class="story-point">We grow only what the season allows — no forcing</div>
+            <div class="story-point">Personal relationship — you can call your farmer directly</div>
+            <div class="story-point">Traceable from seed to your table</div>
+          </div>
+        </div>
+        <div>
+          <div class="story-cards">
+            <div class="story-card">
+              <div class="sc-icon">🌱</div>
+              <div class="sc-title">Chemical Free</div>
+              <p class="sc-desc">We use only natural inputs. No synthetic pesticides, no chemical fertilisers. Safe for children and elders.</p>
+            </div>
+            <div class="story-card">
+              <div class="sc-icon">🚚</div>
+              <div class="sc-title">Same-Day Harvest</div>
+              <p class="sc-desc">Harvested in the morning, delivered by afternoon. Maximum nutrition. Zero cold storage.</p>
+            </div>
+            <div class="story-card">
+              <div class="sc-icon">👨‍🌾</div>
+              <div class="sc-title">Your Family Farmer</div>
+              <p class="sc-desc">Like your family doctor, we take personal responsibility for what we grow and send to your home.</p>
+            </div>
+            <div class="story-card">
+              <div class="sc-icon">📍</div>
+              <div class="sc-title">Traceable Source</div>
+              <p class="sc-desc">Every item can be traced to the exact plot it was grown in. Full transparency, always.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FARM EXPERIENCE SECTION -->
+  <section class="fv-section" id="farmvisit">
+    <div class="container txt-c">
+      <div class="section-label">Farm Life</div>
+      <h2 class="section-title">Experience the Farm</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.7)">Come see where your food is born. Touch the soil. Harvest your own vegetables. Reconnect with nature.</p>
+    </div>
+    <div class="container" style="margin-top:0">
+      <div class="fv-slider-wrap">
+        <div class="fv-slider" id="fv-slider"></div>
+      </div>
+      <div class="fv-nav">
+        <button class="fv-arr" onclick="fvGo(fvSliderIdx-1)">&#8592;</button>
+        <div class="fv-dots" id="fv-dots"></div>
+        <button class="fv-arr" onclick="fvGo(fvSliderIdx+1)">&#8594;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" style="background:#fff" id="testimonials">
+    <div class="container txt-c">
+      <div class="section-label">What Families Say</div>
+      <h2 class="section-title">Trusted by Coimbatore Homes</h2>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <div class="tc-stars">★★★★★</div>
+          <p class="tc-text">"The vegetables are so fresh — my children actually eat more greens now. We can taste the difference from supermarket produce immediately."</p>
+          <div class="tc-name">Priya Suresh</div>
+          <div class="tc-role">RS Puram, Coimbatore</div>
+        </div>
+        <div class="testi-card">
+          <div class="tc-stars">★★★★★</div>
+          <p class="tc-text">"Three years as a subscriber. The consistency is remarkable. Same morning freshness, every single week without fail."</p>
+          <div class="tc-name">Venkatesh Kumar</div>
+          <div class="tc-role">Saravanampatti, Coimbatore</div>
+        </div>
+        <div class="testi-card">
+          <div class="tc-stars">★★★★★</div>
+          <p class="tc-text">"We took our kids for the farm visit — it was eye-opening. They now understand where food comes from and respect every meal."</p>
+          <div class="tc-name">Lakshmi Rajan</div>
+          <div class="tc-role">Peelamedu, Coimbatore</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="fb-name">Kappiyam Organic Farm</div>
+        <p>Your Family Farmer — growing chemical-free produce in Madampatti, Coimbatore since day one.</p>
+        <p style="margin-top:10px;font-size:13px">📞 9003889666 &nbsp;|&nbsp; ✉ Kappiyam.in&#64;gmail.com</p>
+        <p style="font-size:13px">📍 No 6, Therkku Thottam, Kuppanur, Madampatti, CBE - 641010</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><button class="ft-link" onclick="goHome()">Home</button></li>
+          <li><button class="ft-link" onclick="startShop()">Shop Produce</button></li>
+          <li><button class="ft-link" onclick="showPage('pg-sub')">Subscribe</button></li>
+          <li><button class="ft-link" onclick="showPage('pg-track')">Track Order</button></li>
+          <li><button class="ft-link" onclick="document.getElementById('farmvisit').scrollIntoView({behavior:'smooth'})">Farm Experience</button></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Customer</h4>
+        <ul>
+          <li><button class="ft-link" onclick="showPage('pg-auth')">Login / Register</button></li>
+          <li><button class="ft-link" onclick="showPage('pg-prof')">My Profile</button></li>
+          <li><button class="ft-link" onclick="showPage('pg-track')">Track Order</button></li>
+          <li><a href="https://wa.me/919003889666" target="_blank">WhatsApp Us</a></li>
+          <li><button class="ft-link" onclick="startD2B()">Wholesale / D2B &rarr;</button></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 Kappiyam Organic Farm. All rights reserved.</span>
+      <span>Grown with love in Madampatti 🌿</span>
+    </div>
+  </footer>
+
+</div><!-- /pg-home -->
+
+<!-- ══════════════════════════════════════════════════
+     FARM BOOKING MODAL
+══════════════════════════════════════════════════ -->
+<div class="fv-modal-overlay hidden" id="fv-modal-overlay" onclick="if(event.target===this)closeFVModal()">
+  <div class="fv-modal">
+    <div class="fv-modal-head">
+      <div class="fv-modal-icon" id="fv-modal-icon">🌾</div>
+      <div class="fv-modal-title" id="fv-modal-title">Book Farm Visit</div>
+    </div>
+    <div id="fv-modal-err" class="err-box hidden"></div>
+    <div class="fg"><label class="lbl">Your Name</label><input class="inp" id="fv-name" type="text" placeholder="Full name"></div>
+    <div class="fg"><label class="lbl">Mobile Number</label><input class="inp" id="fv-phone" type="tel" placeholder="10-digit number" maxlength="10"></div>
+    <div class="fg"><label class="lbl">Number of People</label><input class="inp" id="fv-count" type="number" min="1" max="20" placeholder="e.g. 4"></div>
+    <div class="fg">
+      <label class="lbl">Preferred Date</label>
+      <input class="inp" id="fv-date" type="date" min="">
+    </div>
+    <div class="fg"><label class="lbl">Notes (optional)</label><input class="inp" id="fv-notes" type="text" placeholder="Any questions or special requests"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ol btn-full" onclick="closeFVModal()">Cancel</button>
+      <button class="btn btn-g btn-full btn-lg" onclick="submitFVBooking()" id="fv-submit-btn">Confirm Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SUBSCRIPTION PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-sub" class="page">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="goBack()">&#8592;</button>
+    <h3>Subscription Plans</h3>
+  </div>
+  <div class="sub-pg-wrap">
+    <div class="txt-c" style="margin-bottom:8px">
+      <div class="section-label">Weekly Fresh Box</div>
+      <h2 class="section-title" style="font-size:1.9rem">Three Simple Plans</h2>
+      <p class="section-sub">Same-day harvest every supply. Minimum 4-week commitment.</p>
+    </div>
+    <div class="sub-grid">
+      <div class="sub-card" onclick="selSubPlan(this,'Seedling Box')" id="sub-card-1">
+        <div class="sub-name">🌱 Seedling Box</div>
+        <div class="sub-tag">For small families &middot; 2&ndash;3 people</div>
+        <div class="sub-price">&#8377;749<span> /supply</span></div>
+        <ul class="sub-features">
+          <li>3&ndash;5 kg/supply</li>
+          <li>6&ndash;8 varieties of vegetables</li>
+          <li>2 bunches of greens</li>
+          <li>1 kg fruit</li>
+          <li>Same-day harvest</li>
+          <li>Min 4-week commitment</li>
+        </ul>
+        <button class="btn btn-ol btn-full btn-sm">Choose Seedling Box</button>
+      </div>
+      <div class="sub-card popular sel" onclick="selSubPlan(this,'Harvest Box')" id="sub-card-2">
+        <div class="sub-badge">&#11088; Most Popular</div>
+        <div class="sub-name">🌾 Harvest Box</div>
+        <div class="sub-tag">For families &middot; 4&ndash;5 people</div>
+        <div class="sub-price">&#8377;849<span> /supply</span></div>
+        <ul class="sub-features">
+          <li>5&ndash;7 kg/supply</li>
+          <li>8&ndash;10 varieties of vegetables</li>
+          <li>4 varieties of greens</li>
+          <li>1 kg fruit</li>
+          <li>Same-day harvest</li>
+          <li>Min 4-week commitment</li>
+        </ul>
+        <button class="btn btn-g btn-full btn-sm">Choose Harvest Box</button>
+      </div>
+      <div class="sub-card" onclick="selSubPlan(this,'Farm Family')" id="sub-card-3">
+        <div class="sub-name">🏡 Farm Family</div>
+        <div class="sub-tag">Premium &middot; Fully customisable</div>
+        <div class="sub-price">&#8377;999<span> /supply</span></div>
+        <ul class="sub-features">
+          <li>Any quantity, any mix</li>
+          <li>Customise your box each supply</li>
+          <li>Priority farm visit access</li>
+          <li>Direct farmer WhatsApp line</li>
+          <li>Same-day harvest</li>
+          <li>Min 4-week commitment</li>
+        </ul>
+        <button class="btn btn-ol btn-full btn-sm">Choose Farm Family</button>
+      </div>
+    </div>
+    <div class="sub-form-card hidden" id="sub-form-card">
+      <h3>Sign Up for Your Box</h3>
+      <div id="sub-err" class="err-box hidden"></div>
+      <div class="fg"><label class="lbl">Your Name</label><input class="inp" type="text" id="sub-name" placeholder="Full name"></div>
+      <div class="fg"><label class="lbl">Mobile Number</label><input class="inp" type="tel" id="sub-phone" placeholder="10-digit number" maxlength="10"></div>
+      <div class="fg"><label class="lbl">Delivery Address</label><textarea class="inp" id="sub-addr" rows="3" placeholder="Street, area, landmark"></textarea></div>
+      <div class="fg"><label class="lbl">Selected Plan</label><input class="inp" id="sub-chosen" readonly value="Harvest Box"></div>
+      <button class="btn btn-g btn-full btn-lg" onclick="submitSubscription()" id="sub-submit">Request Subscription</button>
+      <p style="text-align:center;font-size:12px;color:var(--mut);margin-top:10px">We&rsquo;ll WhatsApp you within 24 hours to confirm your plan.</p>
+    </div>
+  </div>
+</div>
+
+<!-- == AUTH MODAL == -->
+<div class="fv-modal-overlay hidden" id="auth-modal-overlay" onclick="if(event.target===this)closeAuthModal()">
+  <div class="fv-modal" style="max-width:480px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--pri)">Welcome to Kappiyam</div>
+      <button onclick="closeAuthModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--mut);line-height:1;padding:0 4px">&times;</button>
+    </div>
+    <p style="font-size:13.5px;color:var(--mut);margin-bottom:18px">Login or register to place your order. You can close this and continue browsing.</p>
+    <div class="type-grid" style="margin-bottom:18px">
+      <div class="type-card sel" id="m-tc-d2c" onclick="mSelType('d2c')"><div class="type-icon">&#127968;</div><div class="type-lbl">Home / Family</div><div class="type-sub">Fresh produce for your home</div></div>
+      <div class="type-card" id="m-tc-d2b" onclick="mSelType('d2b')"><div class="type-icon">&#127970;</div><div class="type-lbl">Business</div><div class="type-sub">Wholesale / bulk orders</div></div>
+    </div>
+    <div class="auth-tabs" style="margin-bottom:16px">
+      <button class="auth-tab on" id="m-tab-login" onclick="mAuthTab('login')">Login</button>
+      <button class="auth-tab" id="m-tab-reg" onclick="mAuthTab('reg')">Register</button>
+    </div>
+    <div id="m-auth-err" class="err-box hidden"><span id="m-auth-err-txt"></span></div>
+    <div id="m-form-login">
+      <div class="fg"><label class="lbl">Mobile Number</label><input class="inp" type="tel" id="m-l-phone" placeholder="Your registered number" maxlength="10"></div>
+      <button class="btn btn-g btn-full btn-lg" onclick="mDoLogin()" id="m-l-btn">Login</button>
+      <p style="text-align:center;font-size:13px;color:var(--mut);margin-top:12px">New? <button onclick="mAuthTab('reg')" style="background:none;border:none;color:var(--pri);font-weight:700;cursor:pointer;font-family:'Open Sans',sans-serif;font-size:13px">Register</button></p>
+    </div>
+    <div id="m-form-reg" class="hidden">
+      <div class="fg"><label class="lbl">Full Name <span style="color:#c62828">*</span></label><input class="inp" type="text" id="m-r-name" placeholder="Your name"></div>
+      <div class="fg"><label class="lbl">Mobile Number <span style="color:#c62828">*</span></label><input class="inp" type="tel" id="m-r-phone" placeholder="10-digit number" maxlength="10"></div>
+      <div class="fg"><label class="lbl">Address <span style="color:#c62828">*</span></label><input class="inp" type="text" id="m-r-addr" placeholder="Street, area"></div>
+      <div class="fg"><label class="lbl">Landmark</label><input class="inp" type="text" id="m-r-lmk" placeholder="Near..."></div>
+      <div class="fg"><label class="lbl">Area / Zone <span style="color:#c62828">*</span></label><input class="inp" type="text" id="m-r-area" placeholder="e.g. RS Puram"></div>
+      <button class="gps-btn" onclick="mGetGPS()" id="m-gps-btn">&#128205; Use My Current Location <span style="color:#c62828">*</span> (or fill address above)</button>
+      <button class="btn btn-g btn-full btn-lg" onclick="mDoReg()" id="m-r-btn">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     AUTH PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-auth" class="page">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h2>Welcome</h2>
+      <p class="auth-sub">Login or register to place your order</p>
+      <div class="type-grid">
+        <div class="type-card sel" id="tc-d2c" onclick="selType('d2c')">
+          <div class="type-icon">🏠</div>
+          <div class="type-lbl">Home / Family</div>
+          <div class="type-sub">Fresh produce for your home</div>
+        </div>
+        <div class="type-card" id="tc-d2b" onclick="selType('d2b')">
+          <div class="type-icon">🏢</div>
+          <div class="type-lbl">Business</div>
+          <div class="type-sub">Wholesale / bulk orders</div>
+        </div>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab on" id="tab-login" onclick="authTab('login')">Login</button>
+        <button class="auth-tab" id="tab-reg" onclick="authTab('reg')">Register</button>
+      </div>
+      <div id="auth-err" class="err-box hidden"><span id="auth-err-txt"></span></div>
+
+      <!-- Login form -->
+      <div id="form-login">
+        <div class="fg"><label class="lbl">Mobile Number</label><input class="inp" type="tel" id="l-phone" placeholder="Your registered number" maxlength="10"></div>
+        <button class="btn btn-g btn-full btn-lg" onclick="doLogin()" id="l-btn">Login</button>
+        <p style="text-align:center;font-size:13px;color:var(--mut);margin-top:14px">New here? <button onclick="authTab('reg')" style="background:none;border:none;color:var(--pri);font-weight:700;cursor:pointer;font-family:'Open Sans',sans-serif;font-size:13px">Register</button></p>
+      </div>
+
+      <!-- Register form -->
+      <div id="form-reg" class="hidden">
+        <div class="fg"><label class="lbl">Full Name <span style="color:#c62828">*</span></label><input class="inp" type="text" id="r-name" placeholder="Your name"></div>
+        <div class="fg"><label class="lbl">Mobile Number <span style="color:#c62828">*</span></label><input class="inp" type="tel" id="r-phone" placeholder="10-digit number" maxlength="10"></div>
+        <div class="fg"><label class="lbl">Address <span style="color:#c62828">*</span></label><input class="inp" type="text" id="r-addr" placeholder="Street, area"></div>
+        <div class="fg"><label class="lbl">Landmark</label><input class="inp" type="text" id="r-lmk" placeholder="Near…"></div>
+        <div class="fg"><label class="lbl">Area / Zone <span style="color:#c62828">*</span></label><input class="inp" type="text" id="r-area" placeholder="e.g. RS Puram"></div>
+        <button class="gps-btn" onclick="getGPS()" id="gps-btn">📍 Use My Current Location</button>
+        <button class="btn btn-g btn-full btn-lg" onclick="doReg()" id="r-btn">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SHOP PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-shop" class="page">
+  <div class="shop-topbar">
+    <div class="shop-topbar-inner">
+      <div class="shop-greet" id="shop-greet">Browse our <strong>fresh harvest</strong></div>
+      <div class="del-prog" id="del-prog">
+        <div class="del-prog-top"><span>Free delivery</span><span class="amt" id="prog-amt">₹0 / ₹500</span></div>
+        <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+      <button class="btn btn-sm" style="background:var(--bg);color:var(--pri);border:1.5px solid var(--bg2)" onclick="showPage('pg-track')">📦 Track</button>
+    </div>
+  </div>
+  <div class="cat-strip">
+    <div class="cat-strip-inner" id="cat-strip">
+      <button class="cat-btn on" onclick="fcat(this,'All')">All</button>
+      <button class="cat-btn" onclick="fcat(this,'Vegetables')">🥦 Vegetables</button>
+      <button class="cat-btn" onclick="fcat(this,'Fruits')">🍎 Fruits</button>
+      <button class="cat-btn" onclick="fcat(this,'Greens')">🥬 Greens</button>
+      <button class="cat-btn" onclick="fcat(this,'Value Added Products')">🥚 Value Added</button>
+    </div>
+  </div>
+  <div class="items-section">
+    <div class="items-grid" id="items-grid"></div>
+  </div>
+  <div class="cart-bar" id="cart-bar">
+    <div>
+      <div class="cb-cnt" id="cb-cnt">0 items</div>
+      <div class="cb-tot" id="cb-tot">₹0</div>
+    </div>
+    <div class="cb-right">
+      <button class="btn btn-ol-w btn-sm" onclick="buildCheckout();showPage('pg-co')">View Cart</button>
+      <button class="btn" style="background:#fff;color:var(--pri);font-weight:700" onclick="goCheckout()">Checkout →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     CHECKOUT PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-co" class="page">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="goBack()">&#8592;</button>
+    <h3>Checkout</h3>
+  </div>
+  <div class="co-body">
+    <div class="co-section">
+      <h4>Your Cart</h4>
+      <div id="co-items"></div>
+    </div>
+    <div class="co-section">
+      <h4>Delivery Address</h4>
+      <div class="fg"><input class="inp" type="text" id="co-addr" placeholder="Full delivery address"></div>
+      <div class="fg"><input class="inp" type="text" id="co-lmk" placeholder="Landmark (optional)"></div>
+    </div>
+    <div class="co-section">
+      <h4>Delivery Date</h4>
+      <div class="date-pills" id="date-pills"></div>
+    </div>
+    <div class="co-section">
+      <h4>Delivery Slot</h4>
+      <div class="slot-btns">
+        <button class="slot-btn sel" id="sl-morn" onclick="selSlot('Morning')">🌅 Morning</button>
+        <button class="slot-btn" id="sl-eve" onclick="selSlot('Evening')">🌆 Evening</button>
+      </div>
+    </div>
+    <div class="co-section">
+      <h4>Order Notes</h4>
+      <input class="inp" type="text" id="co-notes" placeholder="Any special instructions (optional)">
+    </div>
+    <div class="co-section">
+      <h4>Order Total</h4>
+      <div id="co-total-rows"></div>
+    </div>
+    <div id="co-err" class="err-box hidden"><span id="co-err-txt"></span></div>
+    <button class="btn btn-g btn-full btn-lg" onclick="goPay()" style="margin-top:8px">Proceed to Pay &rarr;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     PAYMENT PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-pay" class="page">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="goBack()">&#8592;</button>
+    <h3>Payment</h3>
+  </div>
+  <div class="pay-body">
+    <div class="upi-card">
+      <h3>Pay via UPI</h3>
+      <p class="upi-sub">Scan any UPI app or use the ID below</p>
+      <div class="upi-id">vijayanvictory@okaxis</div>
+      <p class="upi-sub">UPI Phone: 9944522996</p>
+    </div>
+    <div class="bank-card">
+      <strong>Bank Transfer (alternate):</strong><br>
+      Acc No: 193701000016892 &nbsp;|&nbsp; IFSC: IOBA0001937 &nbsp;|&nbsp; IOB Bank
+    </div>
+    <div class="co-section" style="margin-bottom:14px">
+      <h4>Order Summary</h4>
+      <div id="pay-summary"></div>
+    </div>
+    <div id="pay-err" class="err-box hidden"><span id="pay-err-txt"></span></div>
+    <button class="btn btn-g btn-full btn-lg" onclick="confirmPay()" id="pay-btn">✅ I Have Paid — Confirm Order</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     ORDER CONFIRMED PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-conf" class="page">
+  <div class="conf-icon">✅</div>
+  <div class="conf-card">
+    <h2>Order Confirmed!</h2>
+    <p class="conf-oid">Your order ID: <span id="conf-oid">—</span></p>
+    <p style="font-size:14px;color:var(--mut);margin-bottom:20px;line-height:1.65">We have received your order and will prepare it fresh for delivery. You'll hear from us on WhatsApp shortly.</p>
+    <div class="conf-btns">
+      <button class="btn btn-g btn-full btn-lg" onclick="waOrderSummary()">📱 Share on WhatsApp</button>
+      <button class="btn btn-ol btn-full" onclick="showPage('pg-track')">📦 Track This Order</button>
+      <button class="btn btn-full" style="background:var(--bg);color:var(--pri);border:none;padding:12px;font-family:'Open Sans',sans-serif;font-weight:600;cursor:pointer;border-radius:50px" onclick="finishOrder()">Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TRACK ORDER PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-track" class="page">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="goBack()">&#8592;</button>
+    <h3>Track Order</h3>
+  </div>
+  <div class="track-body">
+    <div class="track-tabs">
+      <button class="track-tab on" id="tt-phone" onclick="trackMode('phone')">By Phone</button>
+      <button class="track-tab" id="tt-oid" onclick="trackMode('oid')">By Order ID</button>
+    </div>
+    <div id="tr-phone-form">
+      <div class="fg"><label class="lbl">Mobile Number</label><input class="inp" type="tel" id="tr-phone" placeholder="Registered number" maxlength="10"></div>
+    </div>
+    <div id="tr-oid-form" class="hidden">
+      <div class="fg"><label class="lbl">Order ID</label><input class="inp" type="text" id="tr-oid" placeholder="e.g. KOF-12345"></div>
+    </div>
+    <button class="btn btn-g btn-full btn-lg" onclick="doTrack()">Search Order</button>
+    <div id="track-result"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     PROFILE PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-prof" class="page">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="goBack()">&#8592;</button>
+    <h3>My Profile</h3>
+  </div>
+  <div class="prof-body">
+    <div id="prof-logged-in" class="hidden">
+      <div class="prof-card">
+        <div class="prof-avatar">👤</div>
+        <div class="prof-name" id="prof-name">—</div>
+        <div class="prof-phone" id="prof-phone">—</div>
+        <div class="prof-phone" id="prof-area"></div>
+        <span class="prof-type-badge" id="prof-type"></span>
+      </div>
+      <div class="prof-actions">
+        <button class="btn btn-g btn-full btn-lg" onclick="startShop()">🛒 Shop Now</button>
+        <button class="btn btn-ol btn-full" onclick="showPage('pg-track')">📦 Track an Order</button>
+        <button class="btn btn-full" style="background:var(--bg);color:#c62828;border:none;padding:13px;font-family:'Open Sans',sans-serif;font-weight:600;cursor:pointer;border-radius:50px" onclick="logout()">Logout</button>
+      </div>
+    </div>
+    <div id="prof-guest">
+      <div class="prof-card" style="text-align:center">
+        <div class="prof-avatar" style="margin:0 auto 14px">🌿</div>
+        <h3 style="margin-bottom:8px">Welcome to Kappiyam</h3>
+        <p style="font-size:14px;color:var(--mut);margin-bottom:20px">Login or register to manage your orders and profile.</p>
+        <button class="btn btn-g btn-full btn-lg" onclick="selType('d2c');showPage('pg-auth')">Login / Register</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     D2B WHOLESALE PAGE
+══════════════════════════════════════════════════ -->
+<div id="pg-d2b" class="page">
+  <div class="d2b-topbar">
+    <h2>Wholesale / D2B Orders</h2>
+    <p>Bulk organic produce for businesses, restaurants &amp; hotels</p>
+  </div>
+  <div class="d2b-body">
+    <div class="d2b-note"><strong>Wholesale Rules:</strong> Minimum 5 Kg per item. Delivery: Tuesday &amp; Sunday (Based on Settings sheet). Bill-to-bill payment. Wholesale pricing on qualifying orders.</div>
+    <div id="d2b-gate">
+      <p style="font-size:14px;color:var(--mut);margin-bottom:14px">Please login with your business account to place wholesale orders.</p>
+      <button class="btn btn-g btn-full btn-lg" onclick="showPage('pg-auth')">Login / Register as Business</button>
+    </div>
+    <div id="d2b-form" class="hidden">
+      <div id="d2b-items"></div>
+      <div class="fg" style="margin-top:16px"><label class="lbl">Delivery Date (Tuesday or Sunday)</label><input class="inp" type="text" id="d2b-date" placeholder="DD MMM YYYY"></div>
+      <div class="fg"><label class="lbl">Notes</label><input class="inp" type="text" id="d2b-notes" placeholder="Any special requirements"></div>
+      <div id="d2b-err" class="err-box hidden"><span id="d2b-err-txt"></span></div>
+      <button class="btn btn-g btn-full btn-lg" onclick="doD2bOrder()">Submit Wholesale Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BOTTOM TAB BAR ══════════════════════════════════ -->
+<div class="btab" id="btab">
+  <div class="btab-inner">
+    <button class="btab-btn on" id="bt-home" onclick="btTab('home');goHome()">
+      <span class="btab-icon">🏠</span>
+      <span>Home</span>
+    </button>
+    <button class="btab-btn" id="bt-shop" onclick="btTab('shop');startShop()">
+      <span class="btab-icon">🛒</span>
+      <span>Shop</span>
+    </button>
+    <button class="btab-btn" id="bt-fv" onclick="btFV()">
+      <span class="btab-icon" id="bt-fv-icon">🌾</span>
+      <span id="bt-fv-lbl">Farm</span>
+      <span class="btab-badge hidden" id="bt-cart-badge">0</span>
+    </button>
+    <button class="btab-btn" id="bt-prof" onclick="btTab('prof');showPage('pg-prof')">
+      <span class="btab-icon">👤</span>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ══ CONFIG ══════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5MFz2a7Oh9i_JQLRfg67D7_XgB_ytcUhKkfEenbE_krcULqSHGXy-2o6Mcuv5uzK-ww/exec';
+const WA         = '919003889666';
+const FREE_MIN   = 500;
+const DEL_FEE    = 60;
+
+// ══ STATE ═══════════════════════════════════════════
+var AVAILABILITY_DATA  = {};
+var ITEMS_DATA_LIVE    = [];
+var DELIVERY_DATES_LIVE= [];
+
+let U          = null;
+let prevPg     = 'pg-home';
+let curPg      = 'pg-home';
+let cart       = {};
+let items      = [];
+let dates      = [];
+let selDateVal = '';
+let selSlotVal = 'Morning';
+let selTypeVal = 'd2c';
+let pending    = null;
+let gps        = null;
+let idleTmr    = null;
+let abandoned  = false;
+
+const CAT_EMOJI = {
+  Vegetables: '🥦',
+  Fruits: '🍎',
+  Greens: '🥬',
+  'Value Added Products': '🥚'
+};
+const TSTEPS = ['Confirmed','Packed','Dispatched','Delivered'];
+
+// ══ NAVIGATION ══════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  var _pg = document.getElementById(id);
+  if (_pg) _pg.classList.add('active');
+  prevPg = curPg;
+  curPg  = id;
+  window.scrollTo(0, 0);
+  if (id === 'pg-prof') fillProfile();
+  // sync bottom tab
+  var tmap = {'pg-home':'home','pg-shop':'shop','pg-d2b':'shop','pg-prof':'prof'};
+  if (tmap[id]) btTab(tmap[id]);
+}
+
+function goBack()  { showPage(prevPg || 'pg-home'); }
+function goHome()  { showPage('pg-home'); btTab('home'); }
+
+function toggleMob() { document.getElementById('mob-menu').classList.toggle('open'); }
+function closeMob()  { document.getElementById('mob-menu').classList.remove('open'); }
+
+// ══ UI UTILS ════════════════════════════════════════
+function toast(msg, err) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (err ? ' err' : '');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+function ld(msg) {
+  document.getElementById('ld-txt').textContent = msg || 'Loading\u2026';
+  document.getElementById('ld').classList.remove('hidden');
+}
+function hd() { document.getElementById('ld').classList.add('hidden'); }
+
+// ══ API ══════════════════════════════════════════════
+async function api(data) {
+  var r = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {'Content-Type': 'application/json'}
+  });
+  return r.json();
+}
+
+async function apiGet(p) {
+  var r = await fetch(SCRIPT_URL + '?' + new URLSearchParams(p));
+  return r.json();
+}
+
+// ══ IDLE / ABANDON ════════════════════════════════════
+function resetIdle() {
+  clearTimeout(idleTmr);
+  idleTmr = setTimeout(function() {
+    if (cartCount() > 0 && !abandoned) trackAbandon('idle');
+  }, 300000);
+}
+
+function trackAbandon(reason) {
+  abandoned = true;
+  var d = {
+    action: 'abandonedCart',
+    phone: U ? U.phone : 'unknown',
+    name: U ? U.name : 'unknown',
+    page: curPg,
+    reason: reason,
+    cartTotal: cartTotal(),
+    cartItems: Object.keys(cart).map(function(k) { return k + ' x' + cart[k].qty; }).join(', '),
+    timestamp: new Date().toISOString()
+  };
+  if (navigator.sendBeacon) navigator.sendBeacon(SCRIPT_URL, JSON.stringify(d));
+  else fetch(SCRIPT_URL, {method:'POST', body: JSON.stringify(d)}).catch(function(){});
+}
+
+// ══ AUTH ═════════════════════════════════════════════
+function selType(t) {
+  selTypeVal = t;
+  document.getElementById('tc-d2c').classList.toggle('sel', t === 'd2c');
+  document.getElementById('tc-d2b').classList.toggle('sel', t === 'd2b');
+}
+
+function authTab(t) {
+  document.getElementById('form-login').classList.toggle('hidden', t !== 'login');
+  document.getElementById('form-reg').classList.toggle('hidden', t !== 'reg');
+  document.getElementById('tab-login').classList.toggle('on', t === 'login');
+  document.getElementById('tab-reg').classList.toggle('on', t === 'reg');
+  document.getElementById('auth-err').classList.add('hidden');
+}
+
+function authErr(m) {
+  document.getElementById('auth-err-txt').textContent = m;
+  document.getElementById('auth-err').classList.remove('hidden');
+}
+
+function getGPS() {
+  var btn = document.getElementById('gps-btn');
+  btn.textContent = 'Getting location\u2026';
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      gps = {lat: pos.coords.latitude, lng: pos.coords.longitude};
+      btn.textContent = '\u2705 Location captured';
+      toast('Location captured!');
+    },
+    function() {
+      btn.textContent = '\u274c Location unavailable — enter address manually';
+      btn.disabled = false;
+    }
+  );
+}
+
+async function doReg() {
+  var name = document.getElementById('r-name').value.trim();
+  var phone = document.getElementById('r-phone').value.trim();
+  var addr  = document.getElementById('r-addr').value.trim();
+  var lmk   = document.getElementById('r-lmk').value.trim();
+  var area  = document.getElementById('r-area').value.trim();
+  if (!name)          { authErr('Please enter your name.'); return; }
+  if (phone.length < 10) { authErr('Enter a valid 10-digit number.'); return; }
+  if (!addr)          { authErr('Please enter your address.'); return; }
+  document.getElementById('r-btn').textContent = 'Creating account\u2026';
+  ld('Creating account\u2026');
+  try {
+    var res = await api({
+      action: 'register',
+      name: name, phone: phone, address: addr, landmark: lmk, area: area,
+      customerType: selTypeVal === 'd2b' ? 'D2B' : 'Regular',
+      source: 'Website',
+      latitude: gps ? gps.lat : '',
+      longitude: gps ? gps.lng : '',
+      locationAccuracy: gps ? 'GPS' : 'Address Only'
+    });
+    hd();
+    if (res.ok || res.status === 'success') {
+      U = res.customer || {name: name, phone: phone, address: addr, landmark: lmk, area: area, customerType: selTypeVal === 'd2b' ? 'D2B' : 'Regular'};
+      localStorage.setItem('kap_u', JSON.stringify(U));
+      updateNav();
+      toast('Welcome to Kappiyam, ' + name + '! \ud83c\udf3f');
+      routePost();
+    } else {
+      authErr(res.message || 'Registration failed. Please try again.');
+      document.getElementById('r-btn').textContent = 'Create Account';
+    }
+  } catch(e) {
+    hd();
+    authErr('Network error. Please try again.');
+    document.getElementById('r-btn').textContent = 'Create Account';
+  }
+}
+
+async function doLogin() {
+  var phone = document.getElementById('l-phone').value.trim();
+  if (phone.length < 10) { authErr('Enter your registered mobile number.'); return; }
+  document.getElementById('l-btn').textContent = 'Logging in\u2026';
+  ld('Checking your account\u2026');
+  try {
+    var res = await api({action: 'login', phone: phone});
+    hd();
+    if (res.ok || res.status === 'success') {
+      U = res.customer;
+      if (U.customerType === 'D2B') selTypeVal = 'd2b';
+      else selTypeVal = 'd2c';
+      localStorage.setItem('kap_u', JSON.stringify(U));
+      updateNav();
+      toast('Welcome back, ' + U.name + '! \ud83d\udc4b');
+      routePost();
+    } else {
+      authErr(res.message || 'Number not found. Please register.');
+      document.getElementById('l-btn').textContent = 'Login';
+    }
+  } catch(e) {
+    hd();
+    authErr('Network error. Please try again.');
+    document.getElementById('l-btn').textContent = 'Login';
+  }
+}
+
+function routePost() {
+  if (selTypeVal === 'd2b' || (U && U.customerType === 'D2B')) {
+    loadD2B(); showPage('pg-d2b');
+  } else {
+    loadShop(); showPage('pg-shop'); btTab('shop');
+  }
+}
+
+function updateNav() {
+  var cnt = cartCount();
+  var badge = document.getElementById('nav-cart-count');
+  if (badge) {
+    badge.textContent = cnt;
+    badge.classList.toggle('hidden', cnt === 0);
+  }
+  updateBtTab3();
+}
+
+function logout() {
+  U = null;
+  cart = {};
+  localStorage.removeItem('kap_u');
+  localStorage.removeItem('kap_c');
+  updateNav();
+  showPage('pg-home');
+  toast('Logged out.');
+}
+
+// ══ SHOP ═════════════════════════════════════════════
+function startShop() {
+  if (U && U.customerType === 'D2B') { loadD2B(); showPage('pg-d2b'); }
+  else { loadShop(); showPage('pg-shop'); btTab('shop'); }
+}
+
+function startD2B() {
+  selType('d2b');
+  if (U && U.customerType === 'D2B') { loadD2B(); showPage('pg-d2b'); }
+  else { mSelType('d2b'); openAuthModal(); }
+}
+
+async function loadShop() {
+  if (items.length > 0) { renderItems('All'); updateCartBar(); return; }
+  if (typeof ITEMS_DATA_LIVE !== 'undefined' && ITEMS_DATA_LIVE.length > 0) {
+    items = ITEMS_DATA_LIVE;
+    if (typeof DELIVERY_DATES_LIVE !== 'undefined' && DELIVERY_DATES_LIVE.length > 0) dates = DELIVERY_DATES_LIVE;
+    renderItems('All'); updateCartBar(); return;
+  }
+  ld('Loading fresh items…');
+  try {
+    var r = await apiGet({action: 'getItems'});
+    hd();
+    if (r.items) items = r.items;
+    if (r.deliveryDates) dates = r.deliveryDates;
+  } catch(e) {
+    hd();
+    items = [];
+  }
+  renderItems('All');
+  updateCartBar();
+}
+
+function fcat(btn, cat) {
+  document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderItems(cat);
+}
+
+function renderItems(catF) {
+  var g = document.getElementById('items-grid');
+  if (!g) return;
+  var list = catF === 'All' ? items : items.filter(function(i) { return i.category === catF; });
+  if (!list.length) {
+    g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--mut)"><div style="font-size:48px;margin-bottom:14px">🌿</div><div style="font-size:15px">Setting up the shop\u2026 Come back shortly!</div></div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
+    var eng = item.name || '';
+    var tam = item.tamilName || '';
+    var instock = item.inStock !== 'N';
+    var seasonal = item.seasonal === 'Y';
+    var k = eng.replace(/\s+/g,'_');
+
+    // Build variant chips
+    var variants = [];
+    if (item.variants) {
+      var parts = item.variants.split(',');
+      for (var vi = 0; vi < parts.length; vi++) {
+        var vp = parts[vi].trim().split(':');
+        if (vp.length === 2) variants.push({unit: vp[0].trim(), price: parseFloat(vp[1])});
+      }
+    }
+    if (variants.length === 0) {
+      variants.push({unit: item.unit || 'kg', price: parseFloat(item.price) || 0});
+    }
+
+    var defVar = variants[0];
+    var defPrice = defVar.price;
+    var defUnit  = defVar.unit;
+
+    var chipsHtml = '';
+    if (variants.length > 1) {
+      chipsHtml = '<div class="var-chips" id="vc_' + k + '">';
+      for (var vj = 0; vj < variants.length; vj++) {
+        var vv = variants[vj];
+        var vdata = JSON.stringify({name: eng, unit: vv.unit, price: vv.price});
+        chipsHtml += '<button class="var-chip' + (vj === 0 ? ' sel' : '') + '" onclick="selectVar(this,\'' + k + '\',' + "'" + vdata.replace(/'/g,'\\x27') + "'" + ')">' + vv.unit + '</button>';
+      }
+      chipsHtml += '</div>';
+    }
+
+    var idata = JSON.stringify({name: eng, unit: defUnit, price: defPrice});
+    var inCart = cart[k] && cart[k].qty > 0;
+    var qty = inCart ? cart[k].qty : 0;
+
+    var imgHtml = item.imageUrl
+      ? '<img src="' + item.imageUrl + '" alt="' + eng + '" loading="lazy" onerror="this.parentNode.innerHTML=\'' + (CAT_EMOJI[item.category] || '\ud83c\udf31') + '\'">'
+      : (CAT_EMOJI[item.category] || '\ud83c\udf31');
+
+    html += '<div class="item-card' + (instock ? '' : ' oos') + '" id="ic_' + k + '">';
+    html += '<div class="item-img">' + imgHtml + '</div>';
+    if (seasonal) html += '<div class="item-seasonal">Seasonal</div>';
+    html += '<div class="item-body">';
+    html += '<div class="item-name">' + eng + '</div>';
+    if (tam) html += '<div class="item-tamil">' + tam + '</div>';
+    html += chipsHtml;
+    html += '<div class="item-price" id="ip_' + k + '">\u20b9' + defPrice + ' <span style="font-size:11px;font-weight:400;color:var(--mut)">/' + defUnit + '</span></div>';
+    if (instock) {
+      html += '<div class="qty-ctrl">';
+      html += '<button class="qb qb-m" onclick="chQty(\'' + k + '\',-1,\'' + idata.replace(/'/g,'\\x27') + '\')">&#8722;</button>';
+      html += '<span class="qn" id="qq_' + k + '">' + qty + '</span>';
+      html += '<button class="qb qb-p" onclick="chQty(\'' + k + '\',1,\'' + idata.replace(/'/g,'\\x27') + '\')">+</button>';
+      html += '</div>';
+    } else {
+      html += '<div class="item-oos-txt">Out of stock</div>';
+    }
+    html += '</div></div>';
+  }
+  g.innerHTML = html;
+}
+
+function selectVar(btn, k, vdataStr) {
+  // Deselect all chips in this item
+  var wrap = document.getElementById('vc_' + k);
+  if (wrap) {
+    wrap.querySelectorAll('.var-chip').forEach(function(c) { c.classList.remove('sel'); });
+  }
+  btn.classList.add('sel');
+  var vdata = JSON.parse(vdataStr);
+  // Update displayed price
+  var priceEl = document.getElementById('ip_' + k);
+  if (priceEl) priceEl.innerHTML = '\u20b9' + vdata.price + ' <span style="font-size:11px;font-weight:400;color:var(--mut)">/' + vdata.unit + '</span>';
+  // Update qty control idata
+  var idata = JSON.stringify({name: vdata.name, unit: vdata.unit, price: vdata.price});
+  var card = document.getElementById('ic_' + k);
+  if (card) {
+    card.querySelectorAll('.qb').forEach(function(qb, i) {
+      var delta = i === 0 ? -1 : 1;
+      qb.setAttribute('onclick', "chQty('" + k + "'," + delta + ",'" + idata.replace(/'/g,'\\x27') + "')");
+    });
+  }
+  // If item already in cart, update its unit/price
+  if (cart[k]) {
+    cart[k].unit  = vdata.unit;
+    cart[k].price = vdata.price;
+    localStorage.setItem('kap_c', JSON.stringify(cart));
+    updateCartBar();
+  }
+}
+
+function chQty(k, delta, idataStr) {
+  var idata = JSON.parse(idataStr);
+  if (!cart[k]) cart[k] = {name: idata.name, unit: idata.unit, price: idata.price, qty: 0};
+  cart[k].qty = Math.max(0, (cart[k].qty || 0) + delta);
+  if (cart[k].qty === 0) delete cart[k];
+  var el = document.getElementById('qq_' + k);
+  if (el) el.textContent = (cart[k] ? cart[k].qty : 0);
+  localStorage.setItem('kap_c', JSON.stringify(cart));
+  updateCartBar();
+  updateNav();
+  updateBtTab3();
+  resetIdle();
+}
+
+function cartTotal() {
+  return Object.values(cart).reduce(function(s, i) { return s + (i.qty * i.price); }, 0);
+}
+function cartCount() {
+  return Object.values(cart).reduce(function(s, i) { return s + i.qty; }, 0);
+}
+
+function updateCartBar() {
+  var cnt = cartCount();
+  var tot = cartTotal();
+  var bar = document.getElementById('cart-bar');
+  if (bar) bar.classList.toggle('up', cnt > 0);
+  var el = document.getElementById('cb-cnt');
+  if (el) el.textContent = cnt + ' item' + (cnt !== 1 ? 's' : '');
+  var el2 = document.getElementById('cb-tot');
+  if (el2) el2.textContent = '\u20b9' + tot;
+  // Delivery progress
+  var pf = document.getElementById('prog-fill');
+  var pa = document.getElementById('prog-amt');
+  if (pf) pf.style.width = Math.min(100, (tot / FREE_MIN) * 100) + '%';
+  if (pa) pa.textContent = '\u20b9' + tot + ' / \u20b9' + FREE_MIN;
+  // Nav badge
+  var badge = document.getElementById('nav-cart-count');
+  if (badge) { badge.textContent = cnt; badge.classList.toggle('hidden', cnt === 0); }
+  updateBtTab3();
+}
+
+function goCheckout() {
+  if (!cartCount()) { toast('Your cart is empty.', true); return; }
+  if (!U) { openAuthModal(); return; }
+  buildCheckout();
+  showPage('pg-co');
+}
+
+function buildCheckout() {
+  var items_html = '';
+  var tot = 0;
+  var keys = Object.keys(cart);
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    var it = cart[k];
+    var sub = it.qty * it.price;
+    tot += sub;
+    var emo = CAT_EMOJI[it.category] || '\ud83c\udf31';
+    items_html += '<div class="co-item-row">';
+    items_html += '<div class="co-item-emo">' + emo + '</div>';
+    items_html += '<div class="co-item-name">' + it.name + '<div class="co-item-qty">' + it.qty + ' ' + it.unit + '</div></div>';
+    items_html += '<div class="co-item-price">\u20b9' + sub + '</div>';
+    items_html += '<button class="co-item-del" onclick="remCart(\'' + k + '\')">&#10005;</button>';
+    items_html += '</div>';
+  }
+  var el = document.getElementById('co-items');
+  if (el) el.innerHTML = items_html || '<div style="color:var(--mut);font-size:14px">Cart is empty.</div>';
+
+  // Pre-fill address
+  var addrEl = document.getElementById('co-addr');
+  if (addrEl && U) addrEl.value = addrEl.value || (U.address || '');
+  var lmkEl = document.getElementById('co-lmk');
+  if (lmkEl && U) lmkEl.value = lmkEl.value || (U.landmark || '');
+
+  buildDates();
+
+  // Total rows
+  var del = tot >= FREE_MIN ? 0 : DEL_FEE;
+  var rows = '<div class="co-total-row"><span>Subtotal</span><span>\u20b9' + tot + '</span></div>';
+  rows += '<div class="co-total-row"><span>Delivery</span><span>' + (del === 0 ? '\ud83c\udf89 Free' : '\u20b9' + del) + '</span></div>';
+  rows += '<div class="co-total-row grand"><span>Total</span><span>\u20b9' + (tot + del) + '</span></div>';
+  var totEl = document.getElementById('co-total-rows');
+  if (totEl) totEl.innerHTML = rows;
+}
+
+function remCart(k) {
+  delete cart[k];
+  localStorage.setItem('kap_c', JSON.stringify(cart));
+  buildCheckout();
+  updateCartBar();
+}
+
+function buildDates() {
+  var dp = document.getElementById('date-pills');
+  if (!dp) return;
+  if (!dates || !dates.length) {
+    dp.innerHTML = '<p style="font-size:13px;color:var(--mut)">Loading dates\u2026</p>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < dates.length; i++) {
+    var d = dates[i];
+    html += '<button class="date-pill' + (selDateVal === d ? ' sel' : '') + '" onclick="selDate(this,\'' + d + '\')">' + d + '</button>';
+  }
+  dp.innerHTML = html;
+}
+
+function selDate(btn, d) {
+  selDateVal = d;
+  document.querySelectorAll('.date-pill').forEach(function(p) { p.classList.remove('sel'); });
+  btn.classList.add('sel');
+}
+
+function selSlot(s) {
+  selSlotVal = s;
+  document.getElementById('sl-morn').classList.toggle('sel', s === 'Morning');
+  document.getElementById('sl-eve').classList.toggle('sel', s === 'Evening');
+}
+
+function goPay() {
+  if (!cartCount()) { coErr('Your cart is empty.'); return; }
+  var addr = document.getElementById('co-addr').value.trim();
+  if (!addr) { coErr('Please enter your delivery address.'); return; }
+  if (!selDateVal) { coErr('Please select a delivery date.'); return; }
+  if (!selSlotVal) { coErr('Please select a delivery slot.'); return; }
+  var tot = cartTotal();
+  var del = tot >= FREE_MIN ? 0 : DEL_FEE;
+  var notes = document.getElementById('co-notes').value.trim();
+  var lmk   = document.getElementById('co-lmk').value.trim();
+  var itemsList = Object.values(cart).map(function(i) {
+    return {name: i.name, qty: i.qty, unit: i.unit, price: i.price, subtotal: i.qty * i.price};
+  });
+  pending = {
+    name: U.name, phone: U.phone, address: addr, landmark: lmk,
+    items: itemsList, subtotal: tot, deliveryFee: del, total: tot + del,
+    deliveryDate: selDateVal, slot: selSlotVal, notes: notes, area: U.area || ''
+  };
+  // Build payment summary
+  var sumEl = document.getElementById('pay-summary');
+  if (sumEl) {
+    var sh = '';
+    for (var i = 0; i < itemsList.length; i++) {
+      sh += '<div class="co-total-row"><span>' + itemsList[i].name + ' x' + itemsList[i].qty + '</span><span>\u20b9' + itemsList[i].subtotal + '</span></div>';
+    }
+    sh += '<div class="co-total-row"><span>Delivery</span><span>' + (del === 0 ? 'Free' : '\u20b9' + del) + '</span></div>';
+    sh += '<div class="co-total-row grand"><span>Total to Pay</span><span>\u20b9' + (tot + del) + '</span></div>';
+    sumEl.innerHTML = sh;
+  }
+  showPage('pg-pay');
+}
+
+function coErr(m) {
+  document.getElementById('co-err-txt').textContent = m;
+  document.getElementById('co-err').classList.remove('hidden');
+  setTimeout(function() { document.getElementById('co-err').classList.add('hidden'); }, 4000);
+}
+
+async function confirmPay() {
+  if (!pending) { toast('Order data lost. Please restart checkout.', true); return; }
+  var btn = document.getElementById('pay-btn');
+  btn.textContent = 'Confirming\u2026';
+  btn.disabled = true;
+  ld('Placing your order\u2026');
+  try {
+    var res = await api(Object.assign({}, {action: 'placeOrder', paymentMethod: 'UPI', paymentStatus: 'Paid', source: 'Website'}, pending));
+    hd();
+    if (res.ok || res.status === 'success') {
+      var oid = res.orderId || ('KOF-' + Date.now());
+      cart = {};
+      localStorage.removeItem('kap_c');
+      abandoned = true;
+      updateCartBar();
+      showConf(oid);
+    } else {
+      document.getElementById('pay-err-txt').textContent = res.message || 'Something went wrong. WhatsApp us.';
+      document.getElementById('pay-err').classList.remove('hidden');
+      btn.textContent = '\u2705 I Have Paid \u2014 Confirm Order';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    hd();
+    document.getElementById('pay-err-txt').textContent = 'Network error. Please WhatsApp us at 9003889666.';
+    document.getElementById('pay-err').classList.remove('hidden');
+    btn.textContent = '\u2705 I Have Paid \u2014 Confirm Order';
+    btn.disabled = false;
+  }
+}
+
+function waOrderSummary() {
+  if (!pending) return;
+  var lines = ['*Kappiyam Organic Farm \u2014 Order Summary*'];
+  lines.push('Name: ' + pending.name);
+  lines.push('Phone: ' + pending.phone);
+  lines.push('Date: ' + pending.deliveryDate + ' (' + pending.slot + ')');
+  lines.push('Address: ' + pending.address + (pending.landmark ? ', ' + pending.landmark : ''));
+  lines.push('');
+  lines.push('*Items:*');
+  for (var i = 0; i < pending.items.length; i++) {
+    var it = pending.items[i];
+    lines.push(it.name + ' x' + it.qty + ' ' + it.unit + ' = \u20b9' + it.subtotal);
+  }
+  lines.push('');
+  lines.push('Total: \u20b9' + pending.total);
+  lines.push('Payment: UPI \u2705');
+  window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+}
+
+function showConf(oid) {
+  var el = document.getElementById('conf-oid');
+  if (el) el.textContent = oid;
+  showPage('pg-conf');
+}
+
+function finishOrder() {
+  pending = null;
+  showPage('pg-home');
+  toast('Thank you! See you next order. \ud83c\udf3f');
+}
+
+// ══ TRACK ════════════════════════════════════════════
+function trackMode(m) {
+  document.getElementById('tr-phone-form').classList.toggle('hidden', m !== 'phone');
+  document.getElementById('tr-oid-form').classList.toggle('hidden', m !== 'oid');
+  document.getElementById('tt-phone').classList.toggle('on', m === 'phone');
+  document.getElementById('tt-oid').classList.toggle('on', m === 'oid');
+}
+
+async function doTrack() {
+  var phone = document.getElementById('tr-phone').value.trim();
+  var oid   = document.getElementById('tr-oid').value.trim();
+  if (!phone && !oid) { toast('Enter phone or order ID.', true); return; }
+  ld('Searching orders\u2026');
+  try {
+    var res = await api({action: 'trackOrder', phone: phone, orderId: oid});
+    hd();
+    renderTrack(res);
+  } catch(e) {
+    hd();
+    document.getElementById('track-result').innerHTML = '<p style="color:#c62828;font-size:14px;margin-top:14px">Network error. Please try again.</p>';
+  }
+}
+
+function renderTrack(res) {
+  var el = document.getElementById('track-result');
+  if (!el) return;
+  if (!res || (!res.orders && !res.order)) {
+    el.innerHTML = '<div class="track-result"><p style="color:var(--mut);font-size:14px">No orders found.</p></div>';
+    return;
+  }
+  var orders = res.orders || (res.order ? [res.order] : []);
+  var html = '';
+  for (var i = 0; i < orders.length; i++) {
+    var o = orders[i];
+    var status = o.status || 'Confirmed';
+    var si = TSTEPS.indexOf(status);
+    html += '<div class="track-result" style="margin-top:14px">';
+    html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong style="font-size:14px">Order ' + (o.orderId || '') + '</strong><span style="font-size:12px;color:var(--mut)">' + (o.deliveryDate || '') + '</span></div>';
+    html += '<div class="track-steps">';
+    for (var j = 0; j < TSTEPS.length; j++) {
+      var cls = j < si ? 'done' : (j === si ? 'active' : '');
+      html += '<div class="track-step ' + cls + '"><div class="ts-dot">' + (j < si ? '\u2713' : (j + 1)) + '</div><div class="ts-lbl">' + TSTEPS[j] + '</div></div>';
+    }
+    html += '</div>';
+    if (o.items && o.items.length) {
+      html += '<div style="font-size:13px;color:var(--mut);margin-top:8px">';
+      for (var k2 = 0; k2 < o.items.length; k2++) {
+        var it2 = o.items[k2];
+        html += it2.name + ' x' + it2.qty + ' ' + (it2.unit || '') + '<br>';
+      }
+      html += '</div>';
+    }
+    html += '<div style="font-size:14px;font-weight:700;color:var(--pri);margin-top:8px">\u20b9' + (o.total || '') + '</div>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+// ══ PROFILE ══════════════════════════════════════════
+function fillProfile() {
+  var li = document.getElementById('prof-logged-in');
+  var g  = document.getElementById('prof-guest');
+  if (!U) {
+    if (li) li.classList.add('hidden');
+    if (g)  g.classList.remove('hidden');
+    return;
+  }
+  if (li) li.classList.remove('hidden');
+  if (g)  g.classList.add('hidden');
+  var n = document.getElementById('prof-name');
+  var p = document.getElementById('prof-phone');
+  var a = document.getElementById('prof-area');
+  var t = document.getElementById('prof-type');
+  if (n) n.textContent = U.name || '';
+  if (p) p.textContent = '\ud83d\udcde ' + (U.phone || '');
+  if (a) a.textContent = U.area || '';
+  if (t) {
+    var isD2B = U.customerType === 'D2B';
+    t.textContent = isD2B ? '\ud83c\udfe2 Wholesale' : '\ud83c\udfe0 Family';
+    t.style.background = isD2B ? '#fef3c7' : 'rgba(46,94,62,.10)';
+    t.style.color      = isD2B ? '#92400e' : 'var(--pri)';
+  }
+}
+
+// ══ D2B ══════════════════════════════════════════════
+async function loadD2B() {
+  var ok = U && U.customerType === 'D2B';
+  var gate = document.getElementById('d2b-gate');
+  var form = document.getElementById('d2b-form');
+  if (gate) gate.classList.toggle('hidden', ok);
+  if (form) form.classList.toggle('hidden', !ok);
+  if (!ok) return;
+  ld('Loading wholesale items\u2026');
+  try {
+    var r = await apiGet({action: 'getItems', mode: 'd2b'});
+    hd();
+    var d2bItems = (r.items || []).filter(function(i) { return i.d2bAvail === 'Y'; });
+    var el = document.getElementById('d2b-items');
+    if (!el) return;
+    var html = '';
+    for (var i = 0; i < d2bItems.length; i++) {
+      var item = d2bItems[i];
+      var k = item.name.replace(/\s+/g, '_');
+      var price = parseFloat(item.d2bPrice) || parseFloat(item.price) || 0;
+      var idata = JSON.stringify({name: item.name, unit: item.unit, price: price, min: item.minD2bQty || 5});
+      html += '<div class="d2b-item-row">';
+      html += '<div style="flex:1"><div style="font-weight:700;font-size:14px">' + item.name + '</div>';
+      html += '<div style="font-size:12px;color:var(--mut)">Min ' + (item.minD2bQty || 5) + ' ' + item.unit + ' | \u20b9' + price + '/' + item.unit + '</div></div>';
+      html += '<input class="d2b-inp" type="number" min="0" step="0.5" placeholder="0" id="dq_' + k + '" data-idata=\'' + idata + '\'>';
+      html += '<div style="width:36px;font-size:12px;color:var(--mut)">' + item.unit + '</div>';
+      html += '</div>';
+    }
+    el.innerHTML = html || '<p style="color:var(--mut);font-size:14px">No wholesale items available.</p>';
+  } catch(e) {
+    hd();
+    toast('Could not load items. Please try again.', true);
+  }
+}
+
+async function doD2bOrder() {
+  var date  = document.getElementById('d2b-date').value.trim();
+  var notes = document.getElementById('d2b-notes').value.trim();
+  if (!date) { showD2bErr('Please enter delivery date.'); return; }
+  var orderItems = [];
+  document.querySelectorAll('[id^="dq_"]').forEach(function(inp) {
+    var qty = parseFloat(inp.value);
+    if (qty > 0) {
+      var idata = JSON.parse(inp.getAttribute('data-idata'));
+      if (qty < idata.min) {
+        toast('Minimum ' + idata.min + ' ' + idata.unit + ' for ' + idata.name, true);
+        return;
+      }
+      orderItems.push({name: idata.name, unit: idata.unit, price: idata.price, qty: qty, subtotal: qty * idata.price});
+    }
+  });
+  if (!orderItems.length) { showD2bErr('Please enter quantity for at least one item.'); return; }
+  ld('Placing wholesale order\u2026');
+  try {
+    var res = await api({action: 'placeD2bOrder', buyerName: U.name, phone: U.phone, deliveryDate: date, items: orderItems, notes: notes});
+    hd();
+    if (res.ok || res.status === 'success') {
+      toast('\u2705 Order placed! ID: ' + (res.orderId || ''));
+      document.querySelectorAll('[id^="dq_"]').forEach(function(i) { i.value = ''; });
+      document.getElementById('d2b-date').value = '';
+    } else {
+      showD2bErr(res.message || 'Order failed. Please try again.');
+    }
+  } catch(e) {
+    hd();
+    showD2bErr('Network error. Please try again.');
+  }
+}
+
+function showD2bErr(m) {
+  var el = document.getElementById('d2b-err-txt');
+  var box = document.getElementById('d2b-err');
+  if (el) el.textContent = m;
+  if (box) box.classList.remove('hidden');
+  setTimeout(function() { if (box) box.classList.add('hidden'); }, 4000);
+}
+
+// ══ FARM VISIT ════════════════════════════════════════
+var fvPrograms = [];
+var fvSliderIdx = 0;
+var fvAuto = null;
+var fvSelType = '';
+var fvSelSlot = '';
+
+var FV_DEFAULT = [
+  {
+    name: 'Farm Visit',
+    icon: '\ud83c\udf3e',
+    desc: 'A guided walk through our fields with the farmer. See what we grow, how we grow it, and why chemical-free matters for your family.',
+    bullets: ['Meet your farmer in person', 'Walk through all our growing sections', 'Learn about natural pest control', 'Great for families with children'],
+    btn: 'Book Farm Visit',
+    type: 'Farm Visit',
+    popular: false
+  },
+  {
+    name: 'Self Harvest',
+    icon: '\u2702\ufe0f',
+    desc: 'Pick vegetables directly from the plant. Take home what you harvest — nothing fresher exists anywhere.',
+    bullets: ['Harvest your choice of crop', 'Take home everything you pick', 'Farmer guides you through the process', 'Best weekend activity for families'],
+    btn: 'Book Self Harvest',
+    type: 'Self Harvest',
+    popular: true
+  },
+  {
+    name: 'Feel the Soil',
+    icon: '\ud83c\udf3f',
+    desc: 'Spend a quiet morning as a farm volunteer. Water plants, turn compost, or simply sit with the earth.',
+    bullets: ['Watering, composting, and weeding', 'Morning tea with the farm team', 'Understand how food really grows', 'Open to individuals and groups'],
+    btn: 'Book Experience',
+    type: 'Farm Volunteering',
+    popular: false
+  }
+];
+
+async function loadFarmPrograms() {
+  try {
+    var r = await apiGet({action: 'getFarmPrograms'});
+    if (r.programs && r.programs.length > 0) {
+      fvPrograms = r.programs;
+    } else {
+      fvPrograms = FV_DEFAULT;
+    }
+  } catch(e) {
+    fvPrograms = FV_DEFAULT;
+  }
+  renderFarmCards();
+}
+
+function renderFarmCards() {
+  var slider = document.getElementById('fv-slider');
+  var dots   = document.getElementById('fv-dots');
+  if (!slider || !dots) return;
+  var programs = fvPrograms.length ? fvPrograms : FV_DEFAULT;
+  var html = '';
+  for (var i = 0; i < programs.length; i++) {
+    var p = programs[i];
+    var bullets = Array.isArray(p.bullets) ? p.bullets : (p.bullets ? p.bullets.split('|') : []);
+    var bullHtml = '';
+    for (var b = 0; b < bullets.length; b++) {
+      bullHtml += '<li>' + bullets[b].trim() + '</li>';
+    }
+    html += '<div class="fv-card">';
+    html += '<div class="fv-card-left">';
+    if (p.popular) html += '<div class="fv-badge">\u2b50 Popular</div>';
+    html += '<div class="fv-icon">' + (p.icon || '\ud83c\udf3e') + '</div>';
+    html += '<h3>' + p.name + '</h3>';
+    html += '<p>' + p.desc + '</p>';
+    var btype = p.type || p.name;
+    html += '<button class="btn btn-ol-w" onclick="openFVBook(\'' + btype + '\')">' + (p.btn || 'Book Now') + '</button>';
+    html += '</div>';
+    html += '<div class="fv-card-right"><ul class="fv-bullets">' + bullHtml + '</ul></div>';
+    html += '</div>';
+  }
+  slider.innerHTML = html;
+  // Dots
+  var dhtml = '';
+  for (var di = 0; di < programs.length; di++) {
+    dhtml += '<div class="fv-dot' + (di === 0 ? ' on' : '') + '" onclick="fvGo(' + di + ')"></div>';
+  }
+  dots.innerHTML = dhtml;
+}
+
+function fvInit() {
+  loadFarmPrograms();
+  fvAuto = setInterval(function() {
+    var count = fvPrograms.length || FV_DEFAULT.length;
+    fvGo((fvSliderIdx + 1) % count);
+  }, 5000);
+}
+
+function fvGo(idx) {
+  var programs = fvPrograms.length ? fvPrograms : FV_DEFAULT;
+  fvSliderIdx = (idx + programs.length) % programs.length;
+  var slider = document.getElementById('fv-slider');
+  if (slider) slider.style.transform = 'translateX(-' + (fvSliderIdx * 100) + '%)';
+  document.querySelectorAll('.fv-dot').forEach(function(d, i) {
+    d.classList.toggle('on', i === fvSliderIdx);
+  });
+}
+
+function openFVBook(type) {
+  fvSelType = type;
+  fvSelSlot = '';
+  var iconMap = {'Farm Visit':'\ud83c\udf3e','Self Harvest':'\u2702\ufe0f','Farm Volunteering':'\ud83c\udf3f'};
+  var iconEl = document.getElementById('fv-modal-icon');
+  var titleEl = document.getElementById('fv-modal-title');
+  if (iconEl) iconEl.textContent = iconMap[type] || '\ud83c\udf3e';
+  if (titleEl) titleEl.textContent = 'Book ' + type;
+  // Set min date to tomorrow
+  var tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  var dateEl = document.getElementById('fv-date');
+  if (dateEl) dateEl.min = tomorrow.toISOString().split('T')[0];
+  // Pre-fill if logged in
+  var nameEl = document.getElementById('fv-name');
+  var phoneEl = document.getElementById('fv-phone');
+  if (nameEl && U && !nameEl.value) nameEl.value = U.name || '';
+  if (phoneEl && U && !phoneEl.value) phoneEl.value = U.phone || '';
+  var errEl = document.getElementById('fv-modal-err');
+  if (errEl) errEl.classList.add('hidden');
+  var overlay = document.getElementById('fv-modal-overlay');
+  if (overlay) overlay.classList.remove('hidden');
+}
+
+function closeFVModal() {
+  var overlay = document.getElementById('fv-modal-overlay');
+  if (overlay) overlay.classList.add('hidden');
+}
+
+async function submitFVBooking() {
+  var name  = document.getElementById('fv-name').value.trim();
+  var phone = document.getElementById('fv-phone').value.trim();
+  var count = document.getElementById('fv-count').value.trim();
+  var date  = document.getElementById('fv-date').value;
+  var notes = document.getElementById('fv-notes').value.trim();
+  var errEl = document.getElementById('fv-modal-err');
+  if (!name)          { errEl.textContent = 'Please enter your name.'; errEl.classList.remove('hidden'); return; }
+  if (phone.length < 10) { errEl.textContent = 'Enter a valid 10-digit number.'; errEl.classList.remove('hidden'); return; }
+  if (!count)         { errEl.textContent = 'Please enter number of people.'; errEl.classList.remove('hidden'); return; }
+  if (!date)          { errEl.textContent = 'Please select a preferred date.'; errEl.classList.remove('hidden'); return; }
+  errEl.classList.add('hidden');
+  var btn = document.getElementById('fv-submit-btn');
+  btn.textContent = 'Booking\u2026';
+  btn.disabled = true;
+  try {
+    await api({action: 'bookFarmVisit', visitType: fvSelType, visitorName: name, phone: phone, headCount: count, slotDate: date, notes: notes, timestamp: new Date().toISOString()});
+    closeFVModal();
+    toast('\u2705 Booking received! We will WhatsApp you to confirm.');
+    btn.textContent = 'Confirm Booking';
+    btn.disabled = false;
+  } catch(e) {
+    errEl.textContent = 'Network error. Please WhatsApp us directly.';
+    errEl.classList.remove('hidden');
+    btn.textContent = 'Confirm Booking';
+    btn.disabled = false;
+  }
+}
+
+// ══ SUBSCRIPTION ══════════════════════════════════════
+function selSubPlan(el, plan) {
+  document.querySelectorAll('.sub-card').forEach(function(c) { c.classList.remove('sel'); });
+  el.classList.add('sel');
+  var ch = document.getElementById('sub-chosen');
+  if (ch) ch.value = plan;
+  var fc = document.getElementById('sub-form-card');
+  if (fc) { fc.classList.remove('hidden'); setTimeout(function(){ fc.scrollIntoView({behavior:'smooth',block:'start'}); }, 100); }
+}
+
+async function submitSubscription() {
+  var name  = document.getElementById('sub-name').value.trim();
+  var phone = document.getElementById('sub-phone').value.trim();
+  var addr  = document.getElementById('sub-addr').value.trim();
+  var plan  = document.getElementById('sub-chosen').value || 'Harvest Box';
+  var errEl = document.getElementById('sub-err');
+  if (!name)          { errEl.textContent = 'Please enter your name.'; errEl.classList.remove('hidden'); return; }
+  if (phone.length < 10) { errEl.textContent = 'Enter a valid 10-digit number.'; errEl.classList.remove('hidden'); return; }
+  if (!addr)          { errEl.textContent = 'Please enter your delivery address.'; errEl.classList.remove('hidden'); return; }
+  errEl.classList.add('hidden');
+  var btn = document.getElementById('sub-submit');
+  btn.textContent = 'Submitting\u2026';
+  btn.disabled = true;
+  try {
+    await api({action: 'subscribe', name: name, phone: phone, address: addr, plan: plan, timestamp: new Date().toISOString()});
+    toast('\u2705 Request received! We\u2019ll WhatsApp you within 24 hours.');
+    var waMsg = 'Hi! I want to subscribe to Kappiyam *' + plan + '* plan.\nName: ' + name + '\nPhone: ' + phone + '\nAddress: ' + addr;
+    window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(waMsg), '_blank');
+    btn.textContent = 'Request Subscription';
+    btn.disabled = false;
+  } catch(e) {
+    errEl.textContent = 'Network error. Please WhatsApp us directly.';
+    errEl.classList.remove('hidden');
+    btn.textContent = 'Request Subscription';
+    btn.disabled = false;
+  }
+}
+
+// ══ BOTTOM TAB BAR ════════════════════════════════════
+function btTab(t) {
+  var tabs = {home:'bt-home', shop:'bt-shop', fv:'bt-fv', prof:'bt-prof'};
+  Object.keys(tabs).forEach(function(k) {
+    var el = document.getElementById(tabs[k]);
+    if (el) el.classList.toggle('on', k === t);
+  });
+}
+
+function btFV() {
+  if (cartCount() > 0) {
+    // Go to checkout when in cart mode
+    buildCheckout();
+    showPage('pg-co');
+    btTab('shop');
+  } else {
+    goHome();
+    btTab('fv');
+    setTimeout(function() {
+      var fv = document.getElementById('farmvisit');
+      if (fv) fv.scrollIntoView({behavior:'smooth'});
+    }, 300);
+  }
+}
+
+function updateBtTab3() {
+  var iconEl = document.getElementById('bt-fv-icon');
+  var lblEl  = document.getElementById('bt-fv-lbl');
+  var badge  = document.getElementById('bt-cart-badge');
+  var cnt = cartCount();
+  if (cnt > 0) {
+    if (iconEl) iconEl.textContent = '\ud83d\uded2';
+    if (lblEl)  lblEl.textContent  = 'Cart';
+    if (badge)  { badge.textContent = cnt; badge.classList.remove('hidden'); }
+  } else {
+    if (iconEl) iconEl.textContent = '\ud83c\udf3e';
+    if (lblEl)  lblEl.textContent  = 'Farm';
+    if (badge)  badge.classList.add('hidden');
+  }
+}
+
+// ══ NAV SCROLL ════════════════════════════════════════
+// nav dropdown
+var openDrop=null;
+function toggleDrop(e,id){
+  e.stopPropagation();
+  var m=document.getElementById(id);
+  if(!m)return;
+  if(openDrop&&openDrop!==m)openDrop.classList.remove('open');
+  m.classList.toggle('open');
+  openDrop=m.classList.contains('open')?m:null;
+}
+document.addEventListener('click',function(){
+  if(openDrop){openDrop.classList.remove('open');openDrop=null;}
+});
+
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('nav');
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ── HERO CAROUSEL ──────────────────────────────────
+var heroIdx = 0;
+var heroAuto = null;
+function heroInit() {
+  var sl = document.getElementById('hero-slides');
+  var dt = document.getElementById('hero-dots');
+  if (!sl || !dt) return;
+  var count = sl.children.length;
+  var dhtml = '';
+  for (var i = 0; i < count; i++) {
+    dhtml += '<div style="width:8px;height:8px;border-radius:50%;background:' + (i===0?'#fff':'rgba(255,255,255,.4)') + ';cursor:pointer;transition:all .3s;flex-shrink:0" onclick="heroGo(' + i + ')"></div>';
+  }
+  dt.innerHTML = dhtml;
+  heroAuto = setInterval(function(){ heroGo((heroIdx+1)%count); }, 4000);
+}
+function heroGo(idx) {
+  var sl = document.getElementById('hero-slides');
+  var dt = document.getElementById('hero-dots');
+  if (!sl) return;
+  var count = sl.children.length;
+  heroIdx = (idx+count)%count;
+  sl.style.transform = 'translateX(-'+(heroIdx*100)+'%)';
+  if (dt) Array.from(dt.children).forEach(function(d,i){
+    d.style.background = i===heroIdx ? '#fff' : 'rgba(255,255,255,.4)';
+    d.style.width = i===heroIdx ? '22px' : '8px';
+    d.style.borderRadius = i===heroIdx ? '4px' : '50%';
+  });
+}
+
+// ── AUTH MODAL ──────────────────────────────────────
+var authModalTypeVal = 'd2c';
+function openAuthModal() {
+  document.getElementById('auth-modal-overlay').classList.remove('hidden');
+  mAuthTab('login'); mSelType('d2c');
+}
+function closeAuthModal() {
+  document.getElementById('auth-modal-overlay').classList.add('hidden');
+}
+function mSelType(t) {
+  authModalTypeVal = t; selTypeVal = t;
+  document.getElementById('m-tc-d2c').classList.toggle('sel', t==='d2c');
+  document.getElementById('m-tc-d2b').classList.toggle('sel', t==='d2b');
+}
+function mAuthTab(t) {
+  document.getElementById('m-form-login').classList.toggle('hidden', t!=='login');
+  document.getElementById('m-form-reg').classList.toggle('hidden', t!=='reg');
+  document.getElementById('m-tab-login').classList.toggle('on', t==='login');
+  document.getElementById('m-tab-reg').classList.toggle('on', t==='reg');
+  document.getElementById('m-auth-err').classList.add('hidden');
+}
+function mAuthErr(m) {
+  document.getElementById('m-auth-err-txt').textContent = m;
+  document.getElementById('m-auth-err').classList.remove('hidden');
+}
+var mGps = null;
+function mGetGPS() {
+  var btn = document.getElementById('m-gps-btn');
+  btn.textContent = 'Getting location...'; btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    function(pos){ mGps={lat:pos.coords.latitude,lng:pos.coords.longitude}; btn.textContent='Location captured'; toast('Location captured!'); },
+    function(){ btn.textContent='Location unavailable - enter address manually'; btn.disabled=false; }
+  );
+}
+async function mDoLogin() {
+  var phone = document.getElementById('m-l-phone').value.trim();
+  if (phone.length < 10) { mAuthErr('Enter your registered mobile number.'); return; }
+  var btn = document.getElementById('m-l-btn');
+  btn.textContent = 'Logging in...'; ld('Checking your account...');
+  try {
+    var res = await api({action:'login', phone:phone});
+    hd();
+    if (res.ok || res.status==='success') {
+      U = res.customer;
+      selTypeVal = U.customerType==='D2B' ? 'd2b' : 'd2c';
+      localStorage.setItem('kap_u', JSON.stringify(U));
+      updateNav(); closeAuthModal();
+      toast('Welcome back, '+U.name+'!');
+      routePost();
+    } else { mAuthErr(res.message||'Number not found. Please register.'); btn.textContent='Login'; }
+  } catch(e) { hd(); mAuthErr('Network error. Please try again.'); btn.textContent='Login'; }
+}
+async function mDoReg() {
+  var name  = document.getElementById('m-r-name').value.trim();
+  var phone = document.getElementById('m-r-phone').value.trim();
+  var addr  = document.getElementById('m-r-addr').value.trim();
+  var lmk   = document.getElementById('m-r-lmk').value.trim();
+  var area  = document.getElementById('m-r-area').value.trim();
+  var ok = true;
+  [['m-r-name',name],['m-r-phone',phone],['m-r-addr',addr],['m-r-area',area]].forEach(function(p){
+    var el = document.getElementById(p[0]);
+    if (!p[1]) { el.style.borderColor='#c62828'; ok=false; } else el.style.borderColor='';
+  });
+  if (!ok) { mAuthErr('Please fill all required fields marked with *'); return; }
+  if (phone.length < 10) { mAuthErr('Enter a valid 10-digit number.'); return; }
+  var btn = document.getElementById('m-r-btn');
+  btn.textContent='Creating account...'; ld('Creating account...');
+  try {
+    var res = await api({action:'register',name:name,phone:phone,address:addr,landmark:lmk,area:area,
+      customerType:authModalTypeVal==='d2b'?'D2B':'Regular',source:'Website',
+      latitude:mGps?mGps.lat:'',longitude:mGps?mGps.lng:'',
+      locationAccuracy:mGps?'GPS':'Address Only'});
+    hd();
+    if (res.ok || res.status==='success') {
+      U = res.customer||{name:name,phone:phone,address:addr,landmark:lmk,area:area,customerType:authModalTypeVal==='d2b'?'D2B':'Regular'};
+      localStorage.setItem('kap_u', JSON.stringify(U));
+      updateNav(); closeAuthModal();
+      toast('Welcome to Kappiyam, '+name+'!');
+      routePost();
+    } else { mAuthErr(res.message||'Registration failed. Please try again.'); btn.textContent='Create Account'; }
+  } catch(e) { hd(); mAuthErr('Network error. Please try again.'); btn.textContent='Create Account'; }
+}
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var LOGO = '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';
+  var imgEl = document.getElementById('nav-logo-img');
+  if (imgEl) imgEl.src = 'data:image/jpeg;base64,' + LOGO;
+  try { var su=localStorage.getItem('kap_u'); var sc=localStorage.getItem('kap_c'); if(su) U=JSON.parse(su); if(sc) cart=JSON.parse(sc); } catch(e) {}
+  updateNav(); updateCartBar();
+  heroInit(); fvInit(); updateBtTab3();
+  ['mousemove','keydown','touchstart','scroll'].forEach(function(e){ document.addEventListener(e,resetIdle,{passive:true}); });
+  resetIdle();
+  var hr=new Date().getHours();
+  var greet=hr<12?'Good morning':(hr<17?'Good afternoon':'Good evening');
+  var greetEl=document.getElementById('shop-greet');
+  if(greetEl&&U) greetEl.innerHTML=greet+', <strong>'+U.name.split(' ')[0]+'!</strong>';
+});
+</script>
+</body>
+</html>
