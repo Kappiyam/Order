@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Kappiyam Farm Orders</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f5f5f5;
+}
+
+header{
+background:#2e7d32;
+color:white;
+text-align:center;
+padding:15px;
+}
+
+nav{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:8px;
+background:#eee;
+padding:10px;
+}
+
+button{
+background:#2e7d32;
+border:none;
+color:white;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+main{
+padding:20px;
+max-width:900px;
+margin:auto;
+}
+
+.hidden{
+display:none;
+}
+
+.item{
+background:white;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+
+.cart{
+position:fixed;
+right:12px;
+bottom:12px;
+width:240px;
+background:white;
+padding:12px;
+border-radius:8px;
+box-shadow:0 4px 10px rgba(0,0,0,.25);
+}
+
+input{
+padding:6px;
+margin-top:6px;
+width:60px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>Kappiyam Regenerative Farm</h2>
+</header>
+
+<nav>
+
+<button onclick="goHome()">Home</button>
+
+<button onclick="openConsumerShop()">Shop</button>
+
+<button onclick="openD2BLogin()">D2B</button>
+
+<button onclick="showPage('pg-visit')">Farm Visit</button>
+
+<button onclick="showPage('pg-subscription')">Subscription</button>
+
+</nav>
+
+<main>
+
+<section id="pg-home">
+
+<h3>Welcome</h3>
+<p>Fresh produce grown through regenerative farming.</p>
+
+</section>
+
+<section id="pg-shop-consumer" class="hidden">
+
+<h3>Consumer Shop</h3>
+
+<div id="consumer-items"></div>
+
+</section>
+
+<section id="pg-d2b-login" class="hidden">
+
+<h3>D2B Login</h3>
+
+<input id="d2b-phone" placeholder="Phone">
+
+<button onclick="loginD2B()">Login</button>
+
+</section>
+
+<section id="pg-shop-d2b" class="hidden">
+
+<h3>D2B Orders</h3>
+
+<div id="d2b-items"></div>
+
+</section>
+
+<section id="pg-visit" class="hidden">
+
+<h3>Farm Visit</h3>
+
+<p>Visit our regenerative farm.</p>
+
+<button onclick="alert('Farm visit booking coming soon')">Request Visit</button>
+
+</section>
+
+<section id="pg-subscription" class="hidden">
+
+<h3>Subscription</h3>
+
+<p>Weekly harvest basket.</p>
+
+<button onclick="alert('Subscription coming soon')">Subscribe</button>
+
+</section>
+
+</main>
+
+<div class="cart">
+
+<h4>Cart</h4>
+
+<div id="cart-items"></div>
+
+<p id="cart-total"></p>
+
+<button onclick="checkout()">Submit Order</button>
+
+</div>
+
+<script>
+
+
+const APP={
+items:[],
+cart:[],
+d2b:false
+};
+
+
+
+function showPage(id){
+
+document.querySelectorAll("main section")
+.forEach(s=>s.classList.add("hidden"));
+
+document.getElementById(id)
+.classList.remove("hidden");
+
+}
+
+
+
+function goHome(){
+
+showPage("pg-home");
+
+}
+
+
+
+function openConsumerShop(){
+
+APP.d2b=false;
+
+showPage("pg-shop-consumer");
+
+renderConsumer();
+
+}
+
+
+
+function openD2BLogin(){
+
+showPage("pg-d2b-login");
+
+}
+
+
+
+function loginD2B(){
+
+APP.d2b=true;
+
+showPage("pg-shop-d2b");
+
+renderD2B();
+
+}
+
+
+
+APP.items=[
+
+{ name:"Banana", price:60, mode:"consumer", stock:20 },
+
+{ name:"Turmeric", price:120, mode:"consumer", stock:10 },
+
+{ name:"Honey", price:350, mode:"consumer", stock:15 },
+
+{ name:"Banana Bulk", wholesale:42, unit:"kg", mode:"d2b" },
+
+{ name:"Turmeric Bulk", wholesale:90, unit:"kg", mode:"d2b" }
+
+];
+
+
+
+function renderConsumer(){
+
+const box=document.getElementById("consumer-items");
+
+box.innerHTML="";
+
+APP.items.forEach(i=>{
+
+if(i.mode!=="consumer") return;
+
+const d=document.createElement("div");
+
+d.className="item";
+
+d.innerHTML=
+"<b>"+i.name+"</b><br>"+
+"Price ₹"+i.price+"<br>"+
+"Stock "+i.stock+"<br>"+
+"<button onclick=\"addCart('"+i.name+"',"+i.price+")\">Add</button>";
+
+box.appendChild(d);
+
+});
+
+}
+
+
+
+function renderD2B(){
+
+const box=document.getElementById("d2b-items");
+
+box.innerHTML="";
+
+APP.items.forEach(i=>{
+
+if(i.mode!=="d2b") return;
+
+const d=document.createElement("div");
+
+d.className="item";
+
+d.innerHTML=
+"<b>"+i.name+"</b><br>"+
+"Wholesale ₹"+i.wholesale+"<br>"+
+"Unit "+i.unit+"<br>"+
+"<input id='q"+i.name+"' type='number' value='1'>"+
+"<button onclick=\"addD2B('"+i.name+"',"+i.wholesale+")\">Add</button>";
+
+box.appendChild(d);
+
+});
+
+}
+
+
+
+function addCart(name,price){
+
+APP.cart.push({name:name,price:price,qty:1});
+
+renderCart();
+
+}
+
+
+
+function addD2B(name,price){
+
+const qty=document.getElementById("q"+name).value;
+
+APP.cart.push({name:name,price:price,qty:qty});
+
+renderCart();
+
+}
+
+
+
+function renderCart(){
+
+const box=document.getElementById("cart-items");
+
+box.innerHTML="";
+
+let total=0;
+
+APP.cart.forEach(i=>{
+
+const d=document.createElement("div");
+
+d.textContent=i.name+" x"+i.qty;
+
+box.appendChild(d);
+
+total+=i.price*i.qty;
+
+});
+
+document.getElementById("cart-total").textContent="Total ₹"+total;
+
+}
+
+
+
+function checkout(){
+
+if(APP.cart.length===0){
+
+alert("Cart empty");
+
+return;
+
+}
+
+alert("Order submitted (demo)");
+
+APP.cart=[];
+
+renderCart();
+
+}
+
+
+
+</script>
+
+</body>
+</html>
